@@ -1,0 +1,12 @@
+using ERP.Core.shared;
+using MediatR;
+
+namespace ERP.Application.Features.CustomerAddresses.Requests.Commands
+{
+    public record CreateCustomerAddressCommand : IRequest<Result<int>>
+    {
+        public int CustomerId { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+    }
+}

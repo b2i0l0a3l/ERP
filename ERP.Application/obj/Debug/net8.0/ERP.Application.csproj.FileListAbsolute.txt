@@ -1,0 +1,15 @@
+/home/fatma/ERP/ERP.Application/bin/Debug/net8.0/ERP.Application.deps.json
+/home/fatma/ERP/ERP.Application/bin/Debug/net8.0/ERP.Application.dll
+/home/fatma/ERP/ERP.Application/bin/Debug/net8.0/ERP.Application.pdb
+/home/fatma/ERP/ERP.Application/bin/Debug/net8.0/ERP.Core.dll
+/home/fatma/ERP/ERP.Application/bin/Debug/net8.0/ERP.Core.pdb
+/home/fatma/ERP/ERP.Application/obj/Debug/net8.0/ERP.Application.csproj.AssemblyReference.cache
+/home/fatma/ERP/ERP.Application/obj/Debug/net8.0/ERP.Application.GeneratedMSBuildEditorConfig.editorconfig
+/home/fatma/ERP/ERP.Application/obj/Debug/net8.0/ERP.Application.AssemblyInfoInputs.cache
+/home/fatma/ERP/ERP.Application/obj/Debug/net8.0/ERP.Application.AssemblyInfo.cs
+/home/fatma/ERP/ERP.Application/obj/Debug/net8.0/ERP.Application.csproj.CoreCompileInputs.cache
+/home/fatma/ERP/ERP.Application/obj/Debug/net8.0/ERP.Appl.DD782D7E.Up2Date
+/home/fatma/ERP/ERP.Application/obj/Debug/net8.0/ERP.Application.dll
+/home/fatma/ERP/ERP.Application/obj/Debug/net8.0/refint/ERP.Application.dll
+/home/fatma/ERP/ERP.Application/obj/Debug/net8.0/ERP.Application.pdb
+/home/fatma/ERP/ERP.Application/obj/Debug/net8.0/ref/ERP.Application.dll

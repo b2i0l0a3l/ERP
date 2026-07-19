@@ -1,0 +1,11 @@
+/home/fatma/ERP/ERP.Core/bin/Debug/net8.0/ERP.Core.deps.json
+/home/fatma/ERP/ERP.Core/bin/Debug/net8.0/ERP.Core.dll
+/home/fatma/ERP/ERP.Core/bin/Debug/net8.0/ERP.Core.pdb
+/home/fatma/ERP/ERP.Core/obj/Debug/net8.0/ERP.Core.GeneratedMSBuildEditorConfig.editorconfig
+/home/fatma/ERP/ERP.Core/obj/Debug/net8.0/ERP.Core.AssemblyInfoInputs.cache
+/home/fatma/ERP/ERP.Core/obj/Debug/net8.0/ERP.Core.AssemblyInfo.cs
+/home/fatma/ERP/ERP.Core/obj/Debug/net8.0/ERP.Core.csproj.CoreCompileInputs.cache
+/home/fatma/ERP/ERP.Core/obj/Debug/net8.0/ERP.Core.dll
+/home/fatma/ERP/ERP.Core/obj/Debug/net8.0/refint/ERP.Core.dll
+/home/fatma/ERP/ERP.Core/obj/Debug/net8.0/ERP.Core.pdb
+/home/fatma/ERP/ERP.Core/obj/Debug/net8.0/ref/ERP.Core.dll
