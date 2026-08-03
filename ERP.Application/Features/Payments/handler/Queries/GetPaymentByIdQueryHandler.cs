@@ -2,7 +2,7 @@ using ERP.Application.Features.Payments.Requests.Queries;
 using ERP.Core.Interfaces;
 using ERP.Core.Models.PaymentModels;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.Payments.Queries
 {
@@ -10,7 +10,7 @@ namespace ERP.Application.Features.Payments.Queries
     {
         private readonly IPaymentRepo _repo;
         public GetPaymentByIdQueryHandler(IPaymentRepo repo) => _repo = repo;
-        public async Task<Result<PaymentDTO>> Handle(GetPaymentByIdQuery request, CancellationToken ct)
+        public async ValueTask<Result<PaymentDTO>> Handle(GetPaymentByIdQuery request, CancellationToken ct)
             => await _repo.GetById(request.Id);
     }
 }

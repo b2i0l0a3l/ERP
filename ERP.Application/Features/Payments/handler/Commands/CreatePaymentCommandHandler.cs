@@ -2,7 +2,7 @@ using ERP.Application.Features.Payments.Requests.Commands;
 using ERP.Core.EntityParams.paymentParams;
 using ERP.Core.Interfaces;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.Payments.Commands
 {
@@ -10,7 +10,7 @@ namespace ERP.Application.Features.Payments.Commands
     {
         private readonly IPaymentRepo _repo;
         public CreatePaymentCommandHandler(IPaymentRepo repo) => _repo = repo;
-        public async Task<Result<int>> Handle(CreatePaymentCommand request, CancellationToken ct)
+        public async ValueTask<Result<int>> Handle(CreatePaymentCommand request, CancellationToken ct)
             => await _repo.Pay(new PayParmas
             {
                 SaleOrderId = request.SaleOrderId,

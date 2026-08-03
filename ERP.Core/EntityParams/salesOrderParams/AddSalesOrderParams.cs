@@ -8,6 +8,6 @@ namespace ERP.Core.EntityParams.salesOrderParams
         public enStatus Status { get; set; } = enStatus.Pending;
         public decimal Discount { get; set; }
         public decimal Total { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateOnly CreatedAt { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
     }
 }

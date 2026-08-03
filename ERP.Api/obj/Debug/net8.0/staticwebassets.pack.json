@@ -1,0 +1,61 @@
+{
+  "Files": [
+    {
+      "Id": "/home/fatma/ERP/ERP.Api/wwwroot/products/17c04f05-2918-41e1-81d5-95b7b6f1d6d7_photo_2026-07-01_14-31-11.jpg",
+      "PackagePath": "staticwebassets/products/17c04f05-2918-41e1-81d5-95b7b6f1d6d7_photo_2026-07-01_14-31-11.jpg"
+    },
+    {
+      "Id": "/home/fatma/ERP/ERP.Api/wwwroot/products/2123b47b-53b8-46fe-a225-74eba8dc61de_photo_2026-07-01_14-31-11.jpg",
+      "PackagePath": "staticwebassets/products/2123b47b-53b8-46fe-a225-74eba8dc61de_photo_2026-07-01_14-31-11.jpg"
+    },
+    {
+      "Id": "/home/fatma/ERP/ERP.Api/wwwroot/products/3fd92ab3-7999-4c55-b16e-f634fdd1f3d8_photo_2026-07-08_14-57-05.jpg",
+      "PackagePath": "staticwebassets/products/3fd92ab3-7999-4c55-b16e-f634fdd1f3d8_photo_2026-07-08_14-57-05.jpg"
+    },
+    {
+      "Id": "/home/fatma/ERP/ERP.Api/wwwroot/products/3fe76f9f-2129-428d-946e-2dd6818e3c11_photo_2026-07-08_14-57-05.jpg",
+      "PackagePath": "staticwebassets/products/3fe76f9f-2129-428d-946e-2dd6818e3c11_photo_2026-07-08_14-57-05.jpg"
+    },
+    {
+      "Id": "/home/fatma/ERP/ERP.Api/wwwroot/products/5e8b0522-5c40-4647-b32e-24d1bbfc7d68_photo_2026-07-01_14-31-11.jpg",
+      "PackagePath": "staticwebassets/products/5e8b0522-5c40-4647-b32e-24d1bbfc7d68_photo_2026-07-01_14-31-11.jpg"
+    },
+    {
+      "Id": "/home/fatma/ERP/ERP.Api/wwwroot/products/5f91ef3c-f1a5-4d46-8a3d-2f831e233612_photo_2026-07-01_14-31-11.jpg",
+      "PackagePath": "staticwebassets/products/5f91ef3c-f1a5-4d46-8a3d-2f831e233612_photo_2026-07-01_14-31-11.jpg"
+    },
+    {
+      "Id": "/home/fatma/ERP/ERP.Api/wwwroot/products/b50b71e5-5a83-46f8-9f17-7b720a8f8f89_photo_2026-07-01_14-31-11.jpg",
+      "PackagePath": "staticwebassets/products/b50b71e5-5a83-46f8-9f17-7b720a8f8f89_photo_2026-07-01_14-31-11.jpg"
+    },
+    {
+      "Id": "/home/fatma/ERP/ERP.Api/wwwroot/products/e5131a4d-f33b-413e-bf4b-6837c2edd17c_photo_2026-07-01_14-31-32.jpg",
+      "PackagePath": "staticwebassets/products/e5131a4d-f33b-413e-bf4b-6837c2edd17c_photo_2026-07-01_14-31-32.jpg"
+    },
+    {
+      "Id": "/home/fatma/ERP/ERP.Api/wwwroot/products/e9eb38f4-a996-41bf-838a-60dd9e04fa00_photo_2026-07-08_14-57-05.jpg",
+      "PackagePath": "staticwebassets/products/e9eb38f4-a996-41bf-838a-60dd9e04fa00_photo_2026-07-08_14-57-05.jpg"
+    },
+    {
+      "Id": "/home/fatma/ERP/ERP.Api/wwwroot/products/fc432226-7715-4776-b029-c424e69e482a_photo_2026-07-01_14-31-11.jpg",
+      "PackagePath": "staticwebassets/products/fc432226-7715-4776-b029-c424e69e482a_photo_2026-07-01_14-31-11.jpg"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.ERP.Api.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.build.ERP.Api.props",
+      "PackagePath": "build\\ERP.Api.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildMultiTargeting.ERP.Api.props",
+      "PackagePath": "buildMultiTargeting\\ERP.Api.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.ERP.Api.props",
+      "PackagePath": "buildTransitive\\ERP.Api.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

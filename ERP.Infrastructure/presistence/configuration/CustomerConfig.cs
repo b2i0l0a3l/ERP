@@ -13,11 +13,11 @@ namespace ERP.Infrastructure.presistence.configuration
         public void Configure(EntityTypeBuilder<Customer> builder)
         {
             BaseEntityConfigurationHelper.ConfigureBaseEntity(builder);
-            builder.Property(x => x.FristName).HasMaxLength(20).IsRequired();
+            builder.Property(x => x.FirstName).HasMaxLength(20).IsRequired();
             builder.Property(x => x.LastName).HasMaxLength(20).IsRequired();
             builder.Property(x => x.Info).HasMaxLength(200).IsRequired(false);
             builder.Property(x => x.CreditLimit).HasPrecision(18,2).IsRequired(false);
-            builder.HasIndex(x=>x.FristName);
+            builder.HasIndex(x=>x.FirstName);
         }
     }
 }

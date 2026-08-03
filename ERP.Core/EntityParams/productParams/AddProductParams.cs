@@ -15,7 +15,7 @@ namespace ERP.Core.EntityParams.productParams
         public string? Barcode { get; set; }
         public decimal CostPrice { get; set; }
         public decimal SellingPrice { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateOnly CreatedAt { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
         public  List<string>? ImageUrl { get; set; }
         public string? CreatedByUserId { get; set; }
     }

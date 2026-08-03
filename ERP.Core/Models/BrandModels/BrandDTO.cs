@@ -4,6 +4,6 @@ namespace ERP.Core.Models.BrandModels
     {
         public int Id { get; init; }
         public string Name { get; set; } = string.Empty;
-        public DateTime CreatedAt { get; set; }
+        public DateOnly CreatedAt { get; set; }
     }
 }

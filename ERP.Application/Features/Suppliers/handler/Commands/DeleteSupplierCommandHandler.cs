@@ -1,7 +1,7 @@
 using ERP.Application.Features.Suppliers.Requests.Commands;
 using ERP.Core.Interfaces;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.Suppliers.Commands
 {
@@ -9,7 +9,7 @@ namespace ERP.Application.Features.Suppliers.Commands
     {
         private readonly ISupplierRepo _repo;
         public DeleteSupplierCommandHandler(ISupplierRepo repo) => _repo = repo;
-        public async Task<Result<bool>> Handle(DeleteSupplierCommand request, CancellationToken ct)
+        public async ValueTask<Result<bool>> Handle(DeleteSupplierCommand request, CancellationToken ct)
             => await _repo.Delete(request.Id);
     }
 }

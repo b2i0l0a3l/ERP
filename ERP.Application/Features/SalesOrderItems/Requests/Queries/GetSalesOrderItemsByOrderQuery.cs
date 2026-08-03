@@ -1,6 +1,6 @@
 using ERP.Core.Models.SalesOrderItemModels;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.SalesOrderItems.Requests.Queries
 {

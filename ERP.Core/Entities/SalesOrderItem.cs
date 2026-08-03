@@ -11,6 +11,7 @@ namespace ERP.Core.Entities
         public int ProductId { get; set; }
         public int Quantity { get; set; }
         public decimal SellingPrice { get; set; }
+        public decimal CostPrice { get; set; }
         public decimal Discount { get; set; }
         public decimal Total { get; set; }
         public virtual Product Product { get; set; } = new();

@@ -2,7 +2,7 @@ using ERP.Application.Features.SalesOrders.Requests.Commands;
 using ERP.Core.EntityParams.salesOrderParams;
 using ERP.Core.Interfaces;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.SalesOrders.Commands
 {
@@ -10,7 +10,7 @@ namespace ERP.Application.Features.SalesOrders.Commands
     {
         private readonly ISalesOrderRepo _repo;
         public SellCommandHandler(ISalesOrderRepo repo) => _repo = repo;
-        public async Task<Result<int>> Handle(SellCommand request, CancellationToken ct)
+        public async ValueTask<Result<int>> Handle(SellCommand request, CancellationToken ct)
             => await _repo.Sell(new SellParams
             {
                 WarehouseId = request.WarehouseId,

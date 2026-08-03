@@ -6,7 +6,6 @@ using ERP.Core.Models.ProductModels;
 using ERP.Core.shared;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace ERP.Infrastructure.presistence.Repos
@@ -14,14 +13,11 @@ namespace ERP.Infrastructure.presistence.Repos
     public class ProductRepo : IProductRepo
     {
         private readonly AppDbContext _Context;
-        private readonly IConfiguration _Config;
-
         private readonly ILogger<ProductRepo> _Logger;
-        public ProductRepo(IConfiguration config, AppDbContext context, ILogger<ProductRepo> logger)
+        public ProductRepo( AppDbContext context, ILogger<ProductRepo> logger)
         {
             _Context = context;
             _Logger = logger;
-            _Config = config;
         }
         public async Task<Result<int>> Add(AddProductParams Params)
         {
@@ -36,18 +32,18 @@ namespace ERP.Infrastructure.presistence.Repos
                 using (SqlCommand command = new SqlCommand("SP_AddNewProduct", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("@BrandId", (object)Params.BrandId ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@BrandId", Params.BrandId);
                     command.Parameters.AddWithValue("@CategoryId", Params.CategoryId);
-                    command.Parameters.AddWithValue("@Description", (object)Params.Description ?? DBNull.Value);
-                    command.Parameters.AddWithValue("@CreatedByUserId", (object)Params.CreatedByUserId ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Description", Params.Description);
+                    command.Parameters.AddWithValue("@CreatedByUserId", Params.CreatedByUserId );
                     command.Parameters.AddWithValue("@Name", Params.Name);
                     command.Parameters.AddWithValue("@CostPrice", Params.CostPrice);
                     command.Parameters.AddWithValue("@SellingPrice", Params.SellingPrice);
-                    command.Parameters.AddWithValue("@SKU", (object)Params.SKU ?? DBNull.Value);
-                    command.Parameters.AddWithValue("@Barcode", (object)Params.Barcode ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@SKU", Params.SKU );
+                    command.Parameters.AddWithValue("@Barcode", Params.Barcode );
 
-                    DataTable? ItemsDataTable = ConvertToDataTable(Params.ImageUrl);
-                    SqlParameter tvpParam = command.Parameters.AddWithValue("@ImageUrl", (object)ItemsDataTable ?? DBNull.Value);
+                    DataTable? ItemsDataTable = ConvertToDataTable(Params.ImageUrl!);
+                    SqlParameter tvpParam = command.Parameters.AddWithValue("@ImageUrl", ItemsDataTable );
                     tvpParam.SqlDbType = SqlDbType.Structured;
                     tvpParam.TypeName = "dbo.ProductImages";
 
@@ -111,7 +107,7 @@ namespace ERP.Infrastructure.presistence.Repos
             {
                 ProductDTO? product = await _Context.Products.AsNoTracking()
                 .Where(p => p.IsDeleted == false && p.Barcode == Barcode)
-                .Select(p => new ProductDTO() { Barcode = Barcode, CostPrice = p.CostPrice, SellingPrice = p.SellingPrice, SKU = p.SKU, Brand = p.Brand != null ? p.Brand.Name : null, ImageUrl = p.ProductImages.Select(img => img.ImageUrl).ToList(), Category = p.Category.Name, CreatedAt = p.CreatedAt, CreatedByUser = p.CreatedByUser != null ? p.CreatedByUser.FristName : null })
+                .Select(p => new ProductDTO() { Barcode = Barcode, CostPrice = p.CostPrice, SellingPrice = p.SellingPrice, SKU = p.SKU, Brand = p.Brand != null ? p.Brand.Name : null, ImageUrl = p.ProductImages.Select(img => img.ImageUrl).ToList(), Category = p.Category.Name, CreatedAt = p.CreatedAt, CreatedByUser = p.CreatedByUser != null ? p.CreatedByUser.FirstName : null })
                 .SingleOrDefaultAsync();
 
                 if (product == null) return Errors.ProductNotFound;
@@ -132,7 +128,7 @@ namespace ERP.Infrastructure.presistence.Repos
             {
                 ProductDTO? product = await _Context.Products.AsNoTracking()
                 .Where(p => p.Id == Id && p.IsDeleted == false)
-                .Select(p => new ProductDTO() { Barcode = p.Barcode, CostPrice = p.CostPrice, SellingPrice = p.SellingPrice, SKU = p.SKU, Brand = p.Brand != null ? p.Brand.Name : null, ImageUrl = p.ProductImages.Select(img => img.ImageUrl).ToList(), Category = p.Category.Name, CreatedAt = p.CreatedAt, CreatedByUser = p.CreatedByUser != null ? p.CreatedByUser.FristName : null })
+                .Select(p => new ProductDTO() {Id = p.Id , Name=p.Name ,  Barcode = p.Barcode, CostPrice = p.CostPrice, SellingPrice = p.SellingPrice, SKU = p.SKU, Brand = p.Brand != null ? p.Brand.Name : null, ImageUrl = p.ProductImages.Select(img => img.ImageUrl).ToList(), Category = p.Category.Name, CreatedAt = p.CreatedAt, CreatedByUser = p.CreatedByUser != null ? p.CreatedByUser.FirstName : null })
                 .SingleOrDefaultAsync();
 
                 if (product == null) return Errors.ProductNotFound;
@@ -153,7 +149,7 @@ namespace ERP.Infrastructure.presistence.Repos
             {
                 ProductDTO? product = await _Context.Products.AsNoTracking()
                 .Where(p => p.IsDeleted == false && p.Name == Name)
-                .Select(p => new ProductDTO() { Barcode = p.Barcode, CostPrice = p.CostPrice, SellingPrice = p.SellingPrice, SKU = p.SKU, Brand = p.Brand != null ? p.Brand.Name : null, ImageUrl = p.ProductImages.Select(img => img.ImageUrl).ToList(), Category = p.Category.Name, CreatedAt = p.CreatedAt, CreatedByUser = p.CreatedByUser != null ? p.CreatedByUser.FristName : null })
+                .Select(p => new ProductDTO() { Id = p.Id , Name=p.Name, Barcode = p.Barcode, CostPrice = p.CostPrice, SellingPrice = p.SellingPrice, SKU = p.SKU, Brand = p.Brand != null ? p.Brand.Name : null, ImageUrl = p.ProductImages.Select(img => img.ImageUrl).ToList(), Category = p.Category.Name, CreatedAt = p.CreatedAt, CreatedByUser = p.CreatedByUser != null ? p.CreatedByUser.FirstName : null })
                 .FirstOrDefaultAsync();
 
                 if (product == null) return Errors.ProductNotFound;
@@ -182,7 +178,7 @@ namespace ERP.Infrastructure.presistence.Repos
                 .OrderByDescending(x => x.CreatedAt)
                 .Skip((Params.PageNumber - 1) * Params.PageSize)
                 .Take(Params.PageSize)
-                .Select(p => new ProductDTO() { Barcode = p.Barcode, CostPrice = p.CostPrice, SellingPrice = p.SellingPrice, SKU = p.SKU, Brand = p.Brand != null ? p.Brand.Name : null, ImageUrl = p.ProductImages.Select(img => img.ImageUrl).ToList(), Category = p.Category.Name, CreatedAt = p.CreatedAt, CreatedByUser = p.CreatedByUser != null ? p.CreatedByUser.FristName : null })
+                .Select(p => new ProductDTO() {Id = p.Id , Name=p.Name, Barcode = p.Barcode, CostPrice = p.CostPrice, SellingPrice = p.SellingPrice, SKU = p.SKU, Brand = p.Brand != null ? p.Brand.Name : null, ImageUrl = p.ProductImages.Select(img => img.ImageUrl).ToList(), Category = p.Category.Name, CreatedAt = p.CreatedAt, CreatedByUser = p.CreatedByUser != null ? p.CreatedByUser.FirstName : null })
                 .ToListAsync();
 
                 PagedResult<ProductDTO> result = new()
@@ -240,7 +236,7 @@ namespace ERP.Infrastructure.presistence.Repos
                     .OrderByDescending(x => x.CreatedAt)
                     .Skip((PageNumber - 1) * PageSize)
                     .Take(PageSize)
-                    .Select(p => new ProductDTO() { Barcode = p.Barcode, CostPrice = p.CostPrice, SellingPrice = p.SellingPrice, SKU = p.SKU, Brand = p.Brand != null ? p.Brand.Name : null, ImageUrl = p.ProductImages.Select(img => img.ImageUrl).ToList(), Category = p.Category.Name, CreatedAt = p.CreatedAt, CreatedByUser = p.CreatedByUser != null ? p.CreatedByUser.FristName : null })
+                    .Select(p => new ProductDTO() {Id = p.Id , Name=p.Name, Barcode = p.Barcode, CostPrice = p.CostPrice, SellingPrice = p.SellingPrice, SKU = p.SKU, Brand = p.Brand != null ? p.Brand.Name : null, ImageUrl = p.ProductImages.Select(img => img.ImageUrl).ToList(), Category = p.Category.Name, CreatedAt = p.CreatedAt, CreatedByUser = p.CreatedByUser != null ? p.CreatedByUser.FirstName : null })
                     .ToListAsync();
 
                 return new PagedResult<ProductDTO>()
@@ -258,9 +254,70 @@ namespace ERP.Infrastructure.presistence.Repos
             }
         }
 
+        public async Task<Result<PagedResult<ProductDTO>>> GetProductByCategory(int CategoryId, int PageNumber, int PageSize)
+        {
+            try
+            {
+                IQueryable<Product> query = _Context.Products
+                  .AsNoTracking()
+                  .Where(p => p.IsDeleted == false && p.CategoryId == CategoryId);
+
+                int count = await query.CountAsync();
+
+                List<ProductDTO> products = await query
+                .OrderByDescending(x => x.CreatedAt)
+                .Skip((PageNumber - 1) * PageSize)
+                .Take(PageSize)
+                .Select(p => new ProductDTO() { Id = p.Id , Name=p.Name,Barcode = p.Barcode, CostPrice = p.CostPrice, SellingPrice = p.SellingPrice, SKU = p.SKU, Brand = p.Brand != null ? p.Brand.Name : null, ImageUrl = p.ProductImages.Select(img => img.ImageUrl).ToList(), Category = p.Category.Name, CreatedAt = p.CreatedAt, CreatedByUser = p.CreatedByUser != null ? p.CreatedByUser.FirstName : null }).ToListAsync();
+
+                return new PagedResult<ProductDTO>()
+                {
+                    Items = products,
+                    PageNumber = PageNumber,
+                    PageSize = PageSize,
+                    TotalCount = count
+                };
+
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError("Error : {ex}", ex);
+                return new Error("InternelError", ErrorType.General, "Internel Error Happend");
+            }
+        }
+          public async Task<Result<PagedResult<ProductDTO>>> GetProductByBrand(int BrandId,int PageNumber , int PageSize)
+        {
+            try
+            {
+                IQueryable<Product> query = _Context.Products
+                  .AsNoTracking()
+                  .Where(p => p.IsDeleted == false && p.BrandId == BrandId);
+
+                int count = await query.CountAsync();
+
+                List<ProductDTO> products = await query
+                .OrderByDescending(x => x.CreatedAt)
+                .Skip((PageNumber - 1) * PageSize)
+                .Take(PageSize)
+                .Select(p => new ProductDTO() {Id = p.Id , Name=p.Name, Barcode = p.Barcode, CostPrice = p.CostPrice, SellingPrice = p.SellingPrice, SKU = p.SKU, Brand = p.Brand != null ? p.Brand.Name : null, ImageUrl = p.ProductImages.Select(img => img.ImageUrl).ToList(), Category = p.Category.Name, CreatedAt = p.CreatedAt, CreatedByUser = p.CreatedByUser != null ? p.CreatedByUser.FirstName : null }).ToListAsync();
+
+                return new PagedResult<ProductDTO>()
+                {
+                    Items = products,
+                    PageNumber = PageNumber,
+                    PageSize = PageSize,
+                    TotalCount = count
+                };
+           
+            }catch(Exception ex)
+            {
+                 _Logger.LogError("Error : {ex}", ex);
+                return new Error("InternelError", ErrorType.General, "Internel Error Happend");                
+            }
+        }
         private DataTable? ConvertToDataTable(List<string> Images)
         {
-            if (Images.Count <= 0)
+            if (Images.Count <= 0 || Images == null)
             {
                 return null;
             }

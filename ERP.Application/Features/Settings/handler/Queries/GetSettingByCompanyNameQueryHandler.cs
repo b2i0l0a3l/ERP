@@ -2,7 +2,7 @@ using ERP.Application.Features.Settings.Requests.Queries;
 using ERP.Core.Interfaces;
 using ERP.Core.Models.SettingModels;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.Settings.Queries
 {
@@ -10,7 +10,7 @@ namespace ERP.Application.Features.Settings.Queries
     {
         private readonly ISettingRepo _repo;
         public GetSettingByCompanyNameQueryHandler(ISettingRepo repo) => _repo = repo;
-        public async Task<Result<SettingDTO>> Handle(GetSettingByCompanyNameQuery request, CancellationToken ct)
+        public async ValueTask<Result<SettingDTO>> Handle(GetSettingByCompanyNameQuery request, CancellationToken ct)
             => await _repo.GetByCompanyName(request.CompanyName);
     }
 }

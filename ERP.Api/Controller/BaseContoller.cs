@@ -1,9 +1,10 @@
+using System;
 using ERP.Core.shared;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ERP.Api.Controller
 {
-    public class BaseContoller : ControllerBase
+    public class BaseController : ControllerBase
     {
 
         protected IActionResult Handle<T>(Result<T> result)
@@ -47,4 +48,6 @@ namespace ERP.Api.Controller
     };
   
     }
+
+
 }

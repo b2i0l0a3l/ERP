@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ERP.Core.Models.BrandModels;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.Brands.Requests.Queries
 {

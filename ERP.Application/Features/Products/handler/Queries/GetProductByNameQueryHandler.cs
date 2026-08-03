@@ -2,7 +2,7 @@ using ERP.Application.Features.Products.Requests.Queries;
 using ERP.Core.Interfaces;
 using ERP.Core.Models.ProductModels;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.Products.Queries
 {
@@ -10,7 +10,7 @@ namespace ERP.Application.Features.Products.Queries
     {
         private readonly IProductRepo _repo;
         public GetProductByNameQueryHandler(IProductRepo repo) => _repo = repo;
-        public async Task<Result<ProductDTO>> Handle(GetProductByNameQuery request, CancellationToken ct)
+        public async ValueTask<Result<ProductDTO>> Handle(GetProductByNameQuery request, CancellationToken ct)
             => await _repo.GetByName(request.Name);
     }
 }

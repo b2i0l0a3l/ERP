@@ -7,6 +7,6 @@ namespace ERP.Core.EntityParams.purchaseOrderParams
         public int SupplierId { get; set; }
         public enStatus OrderStatus { get; set; } = enStatus.Pending;
         public decimal Total { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateOnly CreatedAt { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
     }
 }

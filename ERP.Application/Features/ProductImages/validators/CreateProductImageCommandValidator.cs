@@ -8,7 +8,11 @@ namespace ERP.Application.Features.ProductImages.validators
         public CreateProductImageCommandValidator()
         {
             RuleFor(x => x.ProductId).GreaterThan(0);
-            RuleFor(x => x.ImageUrl).NotEmpty().MaximumLength(500);
+            RuleFor(x => x.ImageUrl)
+                .NotEmpty().When(x => x.Image == null)
+                .MaximumLength(500);
+            RuleFor(x => x.Image)
+                .NotNull().When(x => string.IsNullOrEmpty(x.ImageUrl));
         }
     }
 }

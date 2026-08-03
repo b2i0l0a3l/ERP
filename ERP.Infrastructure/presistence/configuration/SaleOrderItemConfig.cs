@@ -17,6 +17,7 @@ namespace ERP.Infrastructure.presistence.configuration
             builder.Property(x => x.Total).HasPrecision(18, 2).HasDefaultValue(0m).IsRequired();
             builder.Property(x => x.Discount).HasPrecision(18, 2).HasDefaultValue(0m).IsRequired();
             builder.Property(x => x.SellingPrice).HasPrecision(18, 2).IsRequired();
+            builder.Property(x => x.CostPrice).HasPrecision(18, 2).IsRequired();
             builder.ToTable(t =>
             {
                 t.HasCheckConstraint("CK_SaleOrderItemTotal", "[Total] >=0");

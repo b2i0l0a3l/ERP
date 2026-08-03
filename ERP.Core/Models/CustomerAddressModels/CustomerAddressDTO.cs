@@ -6,6 +6,6 @@ namespace ERP.Core.Models.CustomerAddressModels
         public int CustomerId { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public DateTime CreatedAt { get; set; }
+        public DateOnly CreatedAt { get; set; }
     }
 }

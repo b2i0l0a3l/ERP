@@ -9,6 +9,6 @@ namespace ERP.Core.Models.PurchaseOrderModels
         public string? SupplierName { get; set; }
         public enStatus OrderStatus { get; set; }
         public decimal Total { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateOnly CreatedAt { get; set; }
     }
 }

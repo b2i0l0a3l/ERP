@@ -1,6 +1,6 @@
 using ERP.Core.Models.UserModels;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.Users.Requests.Queries
 {

@@ -2,7 +2,7 @@ using ERP.Application.Features.Inventories.Requests.Queries;
 using ERP.Core.Interfaces;
 using ERP.Core.Models.InventoryModels;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.Inventories.Queries
 {
@@ -10,7 +10,7 @@ namespace ERP.Application.Features.Inventories.Queries
     {
         private readonly IInventoryRepo _repo;
         public GetInventoryByProductIdQueryHandler(IInventoryRepo repo) => _repo = repo;
-        public async Task<Result<InventoryDTO>> Handle(GetInventoryByProductIdQuery request, CancellationToken ct)
+        public async ValueTask<Result<InventoryDTO>> Handle(GetInventoryByProductIdQuery request, CancellationToken ct)
             => await _repo.GetByProductId(request.ProductId);
     }
 }

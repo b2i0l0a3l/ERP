@@ -2,7 +2,7 @@ using ERP.Application.Features.PurchaseOrders.Requests.Queries;
 using ERP.Core.Interfaces;
 using ERP.Core.Models.PurchaseOrderModels;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.PurchaseOrders.Queries
 {
@@ -10,7 +10,7 @@ namespace ERP.Application.Features.PurchaseOrders.Queries
     {
         private readonly IPurchaseOrderRepo _repo;
         public GetPurchaseOrderByIdQueryHandler(IPurchaseOrderRepo repo) => _repo = repo;
-        public async Task<Result<PurchaseOrderDTO>> Handle(GetPurchaseOrderByIdQuery request, CancellationToken ct)
+        public async ValueTask<Result<PurchaseOrderDTO>> Handle(GetPurchaseOrderByIdQuery request, CancellationToken ct)
             => await _repo.GetById(request.Id);
     }
 }

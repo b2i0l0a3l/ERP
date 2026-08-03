@@ -1,7 +1,7 @@
 using ERP.Application.Features.Payments.Requests.Commands;
 using ERP.Core.Interfaces;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.Payments.Commands
 {
@@ -9,7 +9,7 @@ namespace ERP.Application.Features.Payments.Commands
     {
         private readonly IPaymentRepo _repo;
         public DeletePaymentCommandHandler(IPaymentRepo repo) => _repo = repo;
-        public async Task<Result<bool>> Handle(DeletePaymentCommand request, CancellationToken ct)
+        public async ValueTask<Result<bool>> Handle(DeletePaymentCommand request, CancellationToken ct)
             => await _repo.Delete(request.Id);
     }
 }

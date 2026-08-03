@@ -15,8 +15,12 @@ namespace ERP.Infrastructure.presistence.configuration
         {
             builder.HasKey(x => x.Id);
 
-            builder.Property(x => x.CreatedAt)
-                   .HasDefaultValueSql("GETUTCDATE()")
+                     builder.Property(x => x.CreatedAt)
+                            .HasDefaultValueSql("GETDATE()")
+                            .IsRequired();
+                   
+                   builder.Property(x => x.UpdatedAt)
+                   .HasDefaultValueSql("GETDATE()")
                    .IsRequired();
 
             builder.Property(x => x.IsDeleted)

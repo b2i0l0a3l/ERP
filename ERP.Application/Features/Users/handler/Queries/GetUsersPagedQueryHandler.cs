@@ -3,7 +3,7 @@ using ERP.Core.EntityParams.userParams;
 using ERP.Core.Interfaces;
 using ERP.Core.Models.UserModels;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.Users.Queries
 {
@@ -11,7 +11,7 @@ namespace ERP.Application.Features.Users.Queries
     {
         private readonly IUserRepo _repo;
         public GetUsersPagedQueryHandler(IUserRepo repo) => _repo = repo;
-        public async Task<Result<PagedResult<UserDTO>>> Handle(GetUsersPagedQuery request, CancellationToken ct)
+        public async ValueTask<Result<PagedResult<UserDTO>>> Handle(GetUsersPagedQuery request, CancellationToken ct)
             => await _repo.GetPaged(new GetPagedAsyncParams { PageNumber = request.PageNumber, PageSize = request.PageSize, Name = request.Name });
     }
 }

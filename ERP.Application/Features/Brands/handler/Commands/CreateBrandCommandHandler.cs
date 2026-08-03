@@ -2,7 +2,7 @@ using ERP.Application.Features.Brands.Requests.Commands;
 using ERP.Core.EntityParams.brandParams;
 using ERP.Core.Interfaces;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.Brands.Commands
 {
@@ -10,7 +10,7 @@ namespace ERP.Application.Features.Brands.Commands
     {
         private readonly IBrandRepo _brandRepo;
         public CreateBrandCommandHandler(IBrandRepo brandRepo) => _brandRepo = brandRepo;
-        public async Task<Result<int>> Handle(CreateBrandCommand request, CancellationToken ct)
+        public async ValueTask<Result<int>> Handle(CreateBrandCommand request, CancellationToken ct)
             => await _brandRepo.Add(new AddBrandParams { Name = request.Name });
     }
 }

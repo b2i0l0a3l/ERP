@@ -1,5 +1,5 @@
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.Products.Requests.Commands
 {

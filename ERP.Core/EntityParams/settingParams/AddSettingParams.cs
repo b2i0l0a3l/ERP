@@ -7,6 +7,6 @@ namespace ERP.Core.EntityParams.settingParams
         public string Currency { get; set; } = "USD";
         public int WarehouseId { get; set; }
         public decimal Tax { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateOnly CreatedAt { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
     }
 }

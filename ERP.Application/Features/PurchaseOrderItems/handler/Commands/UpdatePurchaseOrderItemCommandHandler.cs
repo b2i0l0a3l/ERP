@@ -2,7 +2,7 @@ using ERP.Application.Features.PurchaseOrderItems.Requests.Commands;
 using ERP.Core.EntityParams.purchaseOrderItemParams;
 using ERP.Core.Interfaces;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.PurchaseOrderItems.Commands
 {
@@ -10,7 +10,7 @@ namespace ERP.Application.Features.PurchaseOrderItems.Commands
     {
         private readonly IPurchaseOrderItemRepo _repo;
         public UpdatePurchaseOrderItemCommandHandler(IPurchaseOrderItemRepo repo) => _repo = repo;
-        public async Task<Result<bool>> Handle(UpdatePurchaseOrderItemCommand request, CancellationToken ct)
+        public async ValueTask<Result<bool>> Handle(UpdatePurchaseOrderItemCommand request, CancellationToken ct)
             => await _repo.Update(request.Id, new UpdatePurchaseOrderItemParams { Quantity = request.Quantity, Price = request.Price });
     }
 }

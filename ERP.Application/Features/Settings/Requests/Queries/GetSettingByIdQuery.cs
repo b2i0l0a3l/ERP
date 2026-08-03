@@ -1,6 +1,6 @@
 using ERP.Core.Models.SettingModels;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.Settings.Requests.Queries
 {

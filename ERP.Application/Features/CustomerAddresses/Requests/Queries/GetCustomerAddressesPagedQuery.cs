@@ -1,6 +1,6 @@
 using ERP.Core.Models.CustomerAddressModels;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.CustomerAddresses.Requests.Queries
 {

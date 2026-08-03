@@ -11,6 +11,6 @@ namespace ERP.Core.Models.PaymentModels
         public string? Notes { get; set; }
         public string? ReferenceNumber { get; set; }
         public enPaymentMethod PaymentMethod { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateOnly CreatedAt { get; set; }
     }
 }

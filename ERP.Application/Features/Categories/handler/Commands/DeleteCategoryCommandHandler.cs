@@ -1,7 +1,7 @@
 using ERP.Application.Features.Categories.Requests.Commands;
 using ERP.Core.Interfaces;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.Categories.Commands
 {
@@ -9,7 +9,7 @@ namespace ERP.Application.Features.Categories.Commands
     {
         private readonly ICategoryRepo _repo;
         public DeleteCategoryCommandHandler(ICategoryRepo repo) => _repo = repo;
-        public async Task<Result<bool>> Handle(DeleteCategoryCommand request, CancellationToken ct)
+        public async ValueTask<Result<bool>> Handle(DeleteCategoryCommand request, CancellationToken ct)
             => await _repo.Delete(request.Id);
     }
 }

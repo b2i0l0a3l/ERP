@@ -2,7 +2,7 @@ using ERP.Application.Features.CustomerPhoneNumbers.Requests.Commands;
 using ERP.Core.EntityParams.customerPhoneNumberParams;
 using ERP.Core.Interfaces;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.CustomerPhoneNumbers.Commands
 {
@@ -10,7 +10,7 @@ namespace ERP.Application.Features.CustomerPhoneNumbers.Commands
     {
         private readonly ICustomerPhoneNumberRepo _repo;
         public CreateCustomerPhoneNumberCommandHandler(ICustomerPhoneNumberRepo repo) => _repo = repo;
-        public async Task<Result<int>> Handle(CreateCustomerPhoneNumberCommand request, CancellationToken ct)
+        public async ValueTask<Result<int>> Handle(CreateCustomerPhoneNumberCommand request, CancellationToken ct)
             => await _repo.Add(new AddCustomerPhoneNumberParams { CustomerId = request.CustomerId, PhoneNumber = request.PhoneNumber });
     }
 }

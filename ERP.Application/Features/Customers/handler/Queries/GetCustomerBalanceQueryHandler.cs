@@ -3,7 +3,7 @@ using ERP.Core.Interfaces;
 using ERP.Core.Models.CustomerBalanceModels;
 using ERP.Core.Models.CustomerModels;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.Customers.Queries
 {
@@ -12,7 +12,7 @@ namespace ERP.Application.Features.Customers.Queries
         private readonly ICustomerRepo _customerRepo;
         public GetCustomerBalanceQueryHandler(ICustomerRepo customerRepo) => _customerRepo = customerRepo;
 
-        public async Task<Result<CustomerBalanceDTO>> Handle(GetCustomerBalanceQuery request, CancellationToken ct)
+        public async ValueTask<Result<CustomerBalanceDTO>> Handle(GetCustomerBalanceQuery request, CancellationToken ct)
         {
             Result<CustomerDTO> customerResult = await _customerRepo.GetById(request.CustomerId);
             if (!customerResult.IsSuccess)
@@ -25,7 +25,7 @@ namespace ERP.Application.Features.Customers.Queries
             return new CustomerBalanceDTO
             {
                 CustomerId = request.CustomerId,
-                CustomerName = customerResult.Value!.FristName + " " + customerResult.Value.LastName,
+                CustomerName = customerResult.Value!.FirstName + " " + customerResult.Value.LastName,
                 Balance = balanceResult.Value!
             };
         }

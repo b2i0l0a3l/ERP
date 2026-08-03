@@ -9,6 +9,6 @@ namespace ERP.Core.Models.InventoryModels
         public string? ProductName { get; set; }
         public int Quantity { get; set; }
         public int MinThreshold { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateOnly CreatedAt { get; set; }
     }
 }

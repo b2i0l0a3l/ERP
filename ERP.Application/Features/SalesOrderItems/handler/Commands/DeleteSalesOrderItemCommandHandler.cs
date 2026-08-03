@@ -1,7 +1,7 @@
 using ERP.Application.Features.SalesOrderItems.Requests.Commands;
 using ERP.Core.Interfaces;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.SalesOrderItems.Commands
 {
@@ -9,7 +9,7 @@ namespace ERP.Application.Features.SalesOrderItems.Commands
     {
         private readonly ISalesOrderItemRepo _repo;
         public DeleteSalesOrderItemCommandHandler(ISalesOrderItemRepo repo) => _repo = repo;
-        public async Task<Result<bool>> Handle(DeleteSalesOrderItemCommand request, CancellationToken ct)
+        public async ValueTask<Result<bool>> Handle(DeleteSalesOrderItemCommand request, CancellationToken ct)
             => await _repo.Delete(request.Id);
     }
 }

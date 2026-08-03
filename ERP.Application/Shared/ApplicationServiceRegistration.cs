@@ -1,6 +1,6 @@
-using FluentValidation;
-using MediatR;
+
 using Microsoft.Extensions.DependencyInjection;
+using FluentValidation;
 
 namespace ERP.Application.Shared
 {
@@ -8,7 +8,6 @@ namespace ERP.Application.Shared
     {
         public static void AddApplicationServiceRegistration(this IServiceCollection services)
         {
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ApplicationServiceRegistration).Assembly));
             services.AddValidatorsFromAssembly(typeof(ApplicationServiceRegistration).Assembly);
         }
     }

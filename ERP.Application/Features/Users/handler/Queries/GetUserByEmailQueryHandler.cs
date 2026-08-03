@@ -2,7 +2,7 @@ using ERP.Application.Features.Users.Requests.Queries;
 using ERP.Core.Interfaces;
 using ERP.Core.Models.UserModels;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.Users.Queries
 {
@@ -10,7 +10,7 @@ namespace ERP.Application.Features.Users.Queries
     {
         private readonly IUserRepo _repo;
         public GetUserByEmailQueryHandler(IUserRepo repo) => _repo = repo;
-        public async Task<Result<UserDTO>> Handle(GetUserByEmailQuery request, CancellationToken ct)
+        public async ValueTask<Result<UserDTO>> Handle(GetUserByEmailQuery request, CancellationToken ct)
             => await _repo.GetByEmail(request.Email);
     }
 }

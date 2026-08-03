@@ -1,13 +1,14 @@
 using ERP.Application.Features.Payments.Requests.Commands;
 using ERP.Application.Features.Payments.Requests.Queries;
-using MediatR;
+using Mediator;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace ERP.Api.Controller
 {
     [Route("api/Payment")]
     [ApiController]
-    public class PaymentController : BaseContoller
+    public class PaymentController : BaseController
     {
         private readonly IMediator _mediator;
         public PaymentController(IMediator mediator) => _mediator = mediator;
@@ -29,14 +30,15 @@ namespace ERP.Api.Controller
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [OutputCache(Duration = 120, Tags = new[] { "payments-tag" })]
         public async Task<IActionResult> GetById(int id)
             => Handle(await _mediator.Send(new GetPaymentByIdQuery { Id = id }));
 
         [HttpGet]
-          [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        
+        [OutputCache(Duration = 180, VaryByQueryKeys = new[] { "PageNumber", "PageSize" }, Tags = new[] { "payments-tag" })]
         public async Task<IActionResult> GetPaged([FromQuery] GetPaymentsPagedQuery query)
             => Handle(await _mediator.Send(query));
     }

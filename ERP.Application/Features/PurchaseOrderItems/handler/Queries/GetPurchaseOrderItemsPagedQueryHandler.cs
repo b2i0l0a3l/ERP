@@ -3,7 +3,7 @@ using ERP.Core.EntityParams.purchaseOrderItemParams;
 using ERP.Core.Interfaces;
 using ERP.Core.Models.PurchaseOrderItemModels;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.PurchaseOrderItems.Queries
 {
@@ -11,7 +11,7 @@ namespace ERP.Application.Features.PurchaseOrderItems.Queries
     {
         private readonly IPurchaseOrderItemRepo _repo;
         public GetPurchaseOrderItemsPagedQueryHandler(IPurchaseOrderItemRepo repo) => _repo = repo;
-        public async Task<Result<PagedResult<PurchaseOrderItemDTO>>> Handle(GetPurchaseOrderItemsPagedQuery request, CancellationToken ct)
+        public async ValueTask<Result<PagedResult<PurchaseOrderItemDTO>>> Handle(GetPurchaseOrderItemsPagedQuery request, CancellationToken ct)
             => await _repo.GetPaged(new GetPagedAsyncParams { PageNumber = request.PageNumber, PageSize = request.PageSize, PurchaseOrderId = request.PurchaseOrderId });
     }
 }

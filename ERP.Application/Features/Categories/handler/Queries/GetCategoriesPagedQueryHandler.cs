@@ -3,7 +3,7 @@ using ERP.Core.EntityParams.categoryParams;
 using ERP.Core.Interfaces;
 using ERP.Core.Models.CategoryModels;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.Categories.Queries
 {
@@ -11,7 +11,7 @@ namespace ERP.Application.Features.Categories.Queries
     {
         private readonly ICategoryRepo _repo;
         public GetCategoriesPagedQueryHandler(ICategoryRepo repo) => _repo = repo;
-        public async Task<Result<PagedResult<CategoryDTO>>> Handle(GetCategoriesPagedQuery request, CancellationToken ct)
+        public async ValueTask<Result<PagedResult<CategoryDTO>>> Handle(GetCategoriesPagedQuery request, CancellationToken ct)
             => await _repo.GetPaged(new GetPagedAsyncParams { PageNumber = request.PageNumber, PageSize = request.PageSize, Name = request.Name });
     }
 }

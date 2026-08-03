@@ -9,3 +9,5 @@
 /home/fatma/ERP/ERP.Core/obj/Debug/net8.0/refint/ERP.Core.dll
 /home/fatma/ERP/ERP.Core/obj/Debug/net8.0/ERP.Core.pdb
 /home/fatma/ERP/ERP.Core/obj/Debug/net8.0/ref/ERP.Core.dll
+/home/fatma/ERP/ERP.Core/obj/Debug/net8.0/ERP.Core.sourcelink.json
+/home/fatma/ERP/ERP.Core/obj/Debug/net8.0/ERP.Core.csproj.AssemblyReference.cache

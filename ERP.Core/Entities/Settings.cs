@@ -9,8 +9,8 @@ namespace ERP.Core.Entities
     {
         public string CompanyName { get; set; } = string.Empty;
         public string? LogoUrl { get; set; }
-        public string Currency { get; set; } = "USD";
-        
+        public string Currency { get; set; } = "DHs";
+        public bool ShowImagesInInvoice { get; set; } = false;
         public int WarehouseId { get; set; }
         public decimal Tax { get; set; }
 

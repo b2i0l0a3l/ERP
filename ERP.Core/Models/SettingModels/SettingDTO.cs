@@ -9,6 +9,6 @@ namespace ERP.Core.Models.SettingModels
         public int WarehouseId { get; set; }
         public string? WarehouseName { get; set; }
         public decimal Tax { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateOnly CreatedAt { get; set; }
     }
 }

@@ -7,7 +7,7 @@ namespace ERP.Application.Features.Customers.validators
     {
         public CreateCustomerCommandValidator()
         {
-            RuleFor(x => x.FristName).NotEmpty().MaximumLength(50);
+            RuleFor(x => x.FirstName).NotEmpty().MaximumLength(50);
             RuleFor(x => x.LastName).NotEmpty().MaximumLength(50);
         }
     }

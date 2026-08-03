@@ -10,6 +10,6 @@ namespace ERP.Core.Models.SalesOrderModels
         public enStatus Status { get; set; }
         public decimal Discount { get; set; }
         public decimal Total { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateOnly CreatedAt { get; set; }
     }
 }

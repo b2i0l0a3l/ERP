@@ -24,7 +24,7 @@ namespace ERP.Infrastructure.presistence.Repos
             {
                 Customer customer = new()
                 {
-                    FristName = Params.FristName,
+                    FirstName = Params.FirstName,
                     LastName = Params.LastName,
                     Info = Params.Info,
                     CreatedAt = Params.CreatedAt
@@ -62,7 +62,7 @@ namespace ERP.Infrastructure.presistence.Repos
             {
                 CustomerDTO? customer = await _Context.Customers.AsNoTracking()
                     .Where(c => c.Id == Id && c.IsDeleted == false)
-                    .Select(c => new CustomerDTO() { Id = c.Id, FristName = c.FristName, LastName = c.LastName, Info = c.Info, CreatedAt = c.CreatedAt })
+                    .Select(c => new CustomerDTO() { Id = c.Id, FirstName = c.FirstName, LastName = c.LastName, Info = c.Info, CreatedAt = c.CreatedAt })
                     .SingleOrDefaultAsync();
 
                 if (customer == null) return Errors.CustomerNotFound;
@@ -80,7 +80,7 @@ namespace ERP.Infrastructure.presistence.Repos
             try
             {
                 IQueryable<Customer> query = _Context.Customers.AsNoTracking()
-                    .Where(c => c.IsDeleted == false && (Params.Name == null || c.FristName.ToLower().Contains(Params.Name.ToLower()) || c.LastName.ToLower().Contains(Params.Name.ToLower())));
+                    .Where(c => c.IsDeleted == false && (Params.Name == null || c.FirstName.ToLower().Contains(Params.Name.ToLower()) || c.LastName.ToLower().Contains(Params.Name.ToLower())));
 
                 int count = await query.CountAsync();
 
@@ -88,7 +88,7 @@ namespace ERP.Infrastructure.presistence.Repos
                     .OrderByDescending(c => c.CreatedAt)
                     .Skip((Params.PageNumber - 1) * Params.PageSize)
                     .Take(Params.PageSize)
-                    .Select(c => new CustomerDTO() { Id = c.Id, FristName = c.FristName, LastName = c.LastName, Info = c.Info, CreatedAt = c.CreatedAt })
+                    .Select(c => new CustomerDTO() { Id = c.Id, FirstName = c.FirstName, LastName = c.LastName, Info = c.Info, CreatedAt = c.CreatedAt })
                     .ToListAsync();
 
                 return new PagedResult<CustomerDTO>()
@@ -112,7 +112,7 @@ namespace ERP.Infrastructure.presistence.Repos
             {
                 Customer? customer = await _Context.Customers.FindAsync(Id);
                 if (customer == null) return Errors.CustomerNotFound;
-                customer.FristName = Params.FristName;
+                customer.FirstName = Params.FirstName;
                 customer.LastName = Params.LastName;
                 customer.Info = Params.Info;
                 _Context.Customers.Update(customer);

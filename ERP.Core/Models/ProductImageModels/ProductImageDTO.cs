@@ -5,6 +5,6 @@ namespace ERP.Core.Models.ProductImageModels
         public int Id { get; init; }
         public int ProductId { get; set; }
         public string ImageUrl { get; set; } = string.Empty;
-        public DateTime CreatedAt { get; set; }
+        public DateOnly CreatedAt { get; set; }
     }
 }

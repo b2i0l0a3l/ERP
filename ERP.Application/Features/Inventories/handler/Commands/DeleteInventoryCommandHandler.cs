@@ -1,7 +1,7 @@
 using ERP.Application.Features.Inventories.Requests.Commands;
 using ERP.Core.Interfaces;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.Inventories.Commands
 {
@@ -9,7 +9,7 @@ namespace ERP.Application.Features.Inventories.Commands
     {
         private readonly IInventoryRepo _repo;
         public DeleteInventoryCommandHandler(IInventoryRepo repo) => _repo = repo;
-        public async Task<Result<bool>> Handle(DeleteInventoryCommand request, CancellationToken ct)
+        public async ValueTask<Result<bool>> Handle(DeleteInventoryCommand request, CancellationToken ct)
             => await _repo.Delete(request.Id);
     }
 }

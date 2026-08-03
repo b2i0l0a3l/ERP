@@ -23,5 +23,6 @@ namespace ERP.Core.Entities
         public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
         public virtual ICollection<SalesOrderItem> SalesOrderItems { get; set; } = new List<SalesOrderItem>();
         public virtual ICollection<Return> Returns { get; set; } = new List<Return>();
+        public virtual ICollection<Invoice> Invoices { get; set; } = new List<Invoice>();
     }
 }

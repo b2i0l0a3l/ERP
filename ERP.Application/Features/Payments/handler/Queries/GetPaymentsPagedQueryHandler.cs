@@ -3,7 +3,7 @@ using ERP.Core.EntityParams.paymentParams;
 using ERP.Core.Interfaces;
 using ERP.Core.Models.PaymentModels;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.Payments.Queries
 {
@@ -11,7 +11,7 @@ namespace ERP.Application.Features.Payments.Queries
     {
         private readonly IPaymentRepo _repo;
         public GetPaymentsPagedQueryHandler(IPaymentRepo repo) => _repo = repo;
-        public async Task<Result<PagedResult<PaymentDTO>>> Handle(GetPaymentsPagedQuery request, CancellationToken ct)
+        public async ValueTask<Result<PagedResult<PaymentDTO>>> Handle(GetPaymentsPagedQuery request, CancellationToken ct)
             => await _repo.GetPaged(new GetPagedAsyncParams { PageNumber = request.PageNumber, PageSize = request.PageSize, SaleOrderId = request.SaleOrderId, PurchaseOrderId = request.PurchaseOrderId });
     }
 }

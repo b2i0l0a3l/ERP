@@ -3,7 +3,7 @@ using ERP.Core.EntityParams.warehouseParams;
 using ERP.Core.Interfaces;
 using ERP.Core.Models.WarehouseModels;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.Warehouses.Queries
 {
@@ -11,7 +11,7 @@ namespace ERP.Application.Features.Warehouses.Queries
     {
         private readonly IWarehouseRepo _repo;
         public GetWarehousesPagedQueryHandler(IWarehouseRepo repo) => _repo = repo;
-        public async Task<Result<PagedResult<WarehouseDTO>>> Handle(GetWarehousesPagedQuery request, CancellationToken ct)
+        public async ValueTask<Result<PagedResult<WarehouseDTO>>> Handle(GetWarehousesPagedQuery request, CancellationToken ct)
             => await _repo.GetPaged(new GetPagedAsyncParams { PageNumber = request.PageNumber, PageSize = request.PageSize, Name = request.Name });
     }
 }

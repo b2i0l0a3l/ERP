@@ -3,7 +3,7 @@ using ERP.Core.EntityParams.supplierParams;
 using ERP.Core.Interfaces;
 using ERP.Core.Models.SupplierModels;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.Suppliers.Queries
 {
@@ -11,7 +11,7 @@ namespace ERP.Application.Features.Suppliers.Queries
     {
         private readonly ISupplierRepo _repo;
         public GetSuppliersPagedQueryHandler(ISupplierRepo repo) => _repo = repo;
-        public async Task<Result<PagedResult<SupplierDTO>>> Handle(GetSuppliersPagedQuery request, CancellationToken ct)
+        public async ValueTask<Result<PagedResult<SupplierDTO>>> Handle(GetSuppliersPagedQuery request, CancellationToken ct)
             => await _repo.GetPaged(new GetPagedAsyncParams { PageNumber = request.PageNumber, PageSize = request.PageSize, Name = request.Name });
     }
 }

@@ -1,5 +1,6 @@
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
+using Microsoft.AspNetCore.Http;
 
 namespace ERP.Application.Features.Products.Requests.Commands
 {
@@ -13,7 +14,7 @@ namespace ERP.Application.Features.Products.Requests.Commands
         public string? Barcode { get; set; }
         public decimal CostPrice { get; set; }
         public decimal SellingPrice { get; set; }
-        public List<string>? ImageUrl { get; set; }
+        public List<IFormFile>? Images { get; set; }
         public string? CreatedByUserId { get; set; }
     }
 }

@@ -16,7 +16,7 @@ namespace ERP.Core.Models.ProductModels
         public List<string>? ImageUrl { get; set; }
         public decimal CostPrice { get; set; }
         public decimal SellingPrice { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateOnly CreatedAt { get; set; }
         public string? CreatedByUser { get; set; }
     }
 }

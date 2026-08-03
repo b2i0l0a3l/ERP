@@ -1,13 +1,14 @@
 using ERP.Application.Features.Inventories.Requests.Commands;
 using ERP.Application.Features.Inventories.Requests.Queries;
-using MediatR;
+using Mediator;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace ERP.Api.Controller
 {
     [Route("api/Inventory")]
     [ApiController]
-    public class InventoryController : BaseContoller
+    public class InventoryController : BaseController
     {
         private readonly IMediator _mediator;
         public InventoryController(IMediator mediator) => _mediator = mediator;
@@ -21,7 +22,6 @@ namespace ERP.Api.Controller
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Update(int id, UpdateInventoryCommand command)
         {
@@ -40,6 +40,7 @@ namespace ERP.Api.Controller
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [OutputCache(Duration = 60, Tags = new[] { "inventories-tag" })]
         public async Task<IActionResult> GetById(int id)
             => Handle(await _mediator.Send(new GetInventoryByIdQuery { Id = id }));
 
@@ -47,26 +48,22 @@ namespace ERP.Api.Controller
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
+        [OutputCache(Duration = 60, Tags = new[] { "inventories-tag" })]
         public async Task<IActionResult> GetByProductId(int productId)
             => Handle(await _mediator.Send(new GetInventoryByProductIdQuery { ProductId = productId }));
 
         [HttpGet]
-          [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        
+        [OutputCache(Duration = 120, VaryByQueryKeys = new[] { "PageNumber", "PageSize" }, Tags = new[] { "inventories-tag" })]
         public async Task<IActionResult> GetPaged([FromQuery] GetInventoriesPagedQuery query)
             => Handle(await _mediator.Send(query));
-
-        [HttpGet("low-stock")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetLowStock()
-            => Handle(await _mediator.Send(new GetLowStockQuery()));
 
         [HttpGet("by-warehouse/{warehouseId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [OutputCache(Duration = 120, VaryByQueryKeys = new[] { "PageNumber", "PageSize" }, Tags = new[] { "inventories-tag" })]
         public async Task<IActionResult> GetByWarehouse(int warehouseId, [FromQuery] GetInventoryByWarehouseQuery query)
         {
             query.WarehouseId = warehouseId;

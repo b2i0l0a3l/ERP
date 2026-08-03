@@ -1,6 +1,6 @@
 using ERP.Core.Models.CategoryModels;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.Categories.Requests.Queries
 {

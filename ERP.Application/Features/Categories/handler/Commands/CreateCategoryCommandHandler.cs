@@ -2,7 +2,7 @@ using ERP.Application.Features.Categories.Requests.Commands;
 using ERP.Core.EntityParams.categoryParams;
 using ERP.Core.Interfaces;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.Categories.Commands
 {
@@ -10,7 +10,7 @@ namespace ERP.Application.Features.Categories.Commands
     {
         private readonly ICategoryRepo _repo;
         public CreateCategoryCommandHandler(ICategoryRepo repo) => _repo = repo;
-        public async Task<Result<int>> Handle(CreateCategoryCommand request, CancellationToken ct)
+        public async ValueTask<Result<int>> Handle(CreateCategoryCommand request, CancellationToken ct)
             => await _repo.Add(new AddCategoryParams { Name = request.Name });
     }
 }

@@ -1,6 +1,6 @@
 using ERP.Core.enums;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.Payments.Requests.Commands
 {

@@ -18,29 +18,6 @@ namespace ERP.Infrastructure.presistence.Repos
             _Logger = logger;
         }
 
-        public async Task<Result<string>> Add(AddUserParams Params)
-        {
-            try
-            {
-                User user = new()
-                {
-                    Id = Params.Id,
-                    FristName = Params.FristName,
-                    LastName = Params.LastName,
-                    Email = Params.Email,
-                    PasswordHash = Params.PasswordHash,
-                    PhoneNumber = Params.PhoneNumber,
-                    IsActive = Params.IsActive
-                };
-                _Context.Users.Add(user);
-                await _Context.SaveChangesAsync();
-                return user.Id;
-            }
-            catch
-            {
-                return new Error("UnexpectedError", ErrorType.General, "Error Happend While Adding User");
-            }
-        }
 
         public async Task<Result<bool>> Delete(string Id)
         {
@@ -64,8 +41,8 @@ namespace ERP.Infrastructure.presistence.Repos
             try
             {
                 UserDTO? user = await _Context.Users.AsNoTracking()
-                    .Where(u => u.Id == Id)
-                    .Select(u => new UserDTO() { Id = u.Id, FristName = u.FristName, LastName = u.LastName, Email = u.Email, PhoneNumber = u.PhoneNumber, IsActive = u.IsActive, CreatedAt = DateTime.UtcNow })
+                    .Where(u => u.Id == Id == false)
+                    .Select(u => new UserDTO() { Id = u.Id, FirstName = u.FirstName, LastName = u.LastName, Email = u.Email ?? "N/A", PhoneNumber = u.PhoneNumber ?? "N/A", IsActive = u.IsActive })
                     .SingleOrDefaultAsync();
 
                 if (user == null) return Errors.UserNotFound;
@@ -83,7 +60,7 @@ namespace ERP.Infrastructure.presistence.Repos
             try
             {
                 UserDTO? user = await _Context.Users.AsNoTracking()
-                    .Select(u => new UserDTO() { Id = u.Id, FristName = u.FristName, LastName = u.LastName, Email = u.Email, PhoneNumber = u.PhoneNumber, IsActive = u.IsActive, CreatedAt = DateTime.UtcNow })
+                    .Select(u => new UserDTO() { Id = u.Id, FirstName = u.FirstName, LastName = u.LastName, Email = u.Email ?? "N/A", PhoneNumber = u.PhoneNumber ?? "N/A", IsActive = u.IsActive })
                     .FirstOrDefaultAsync(u => u.Email == Email);
 
                 if (user == null) return Errors.UserNotFound;
@@ -101,15 +78,15 @@ namespace ERP.Infrastructure.presistence.Repos
             try
             {
                 IQueryable<User> query = _Context.Users.AsNoTracking()
-                    .Where(u => Params.Name == null || u.FristName.ToLower().Contains(Params.Name.ToLower()) || u.LastName.ToLower().Contains(Params.Name.ToLower()));
+                    .Where(u => Params.Name == null || u.FirstName.ToLower().Contains(Params.Name.ToLower()) || u.LastName.ToLower().Contains(Params.Name.ToLower()));
 
                 int count = await query.CountAsync();
 
                 List<UserDTO>? users = await query
-                    .OrderBy(u => u.FristName)
+                    .OrderBy(u => u.FirstName)
                     .Skip((Params.PageNumber - 1) * Params.PageSize)
                     .Take(Params.PageSize)
-                    .Select(u => new UserDTO() { Id = u.Id, FristName = u.FristName, LastName = u.LastName, Email = u.Email, PhoneNumber = u.PhoneNumber, IsActive = u.IsActive, CreatedAt = DateTime.UtcNow })
+                    .Select(u => new UserDTO() { Id = u.Id, FirstName = u.FirstName, LastName = u.LastName, Email = u.Email ?? "N/A", PhoneNumber = u.PhoneNumber ?? "N/A", IsActive = u.IsActive })
                     .ToListAsync();
 
                 return new PagedResult<UserDTO>()
@@ -133,7 +110,7 @@ namespace ERP.Infrastructure.presistence.Repos
             {
                 User? user = await _Context.Users.FindAsync(Id);
                 if (user == null) return Errors.UserNotFound;
-                user.FristName = Params.FristName;
+                user.FirstName = Params.FirstName;
                 user.LastName = Params.LastName;
                 user.Email = Params.Email;
                 user.PhoneNumber = Params.PhoneNumber;

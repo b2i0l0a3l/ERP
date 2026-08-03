@@ -5,6 +5,6 @@ namespace ERP.Core.EntityParams.inventoryParams
         public int WarehouseId { get; set; }
         public int ProductId { get; set; }
         public int Quantity { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateOnly CreatedAt { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
     }
 }

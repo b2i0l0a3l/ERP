@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "zRzMJkXFhRI=",
+  "dgSpecHash": "zX+kTm+v2w8=",
   "success": true,
   "projectFilePath": "/home/fatma/ERP/ERP.Application/ERP.Application.csproj",
   "expectedPackageFiles": [
@@ -9,15 +9,17 @@
     "/home/fatma/.nuget/packages/mapster/10.0.10/mapster.10.0.10.nupkg.sha512",
     "/home/fatma/.nuget/packages/mapster.core/10.0.10/mapster.core.10.0.10.nupkg.sha512",
     "/home/fatma/.nuget/packages/mapster.dependencyinjection/10.0.10/mapster.dependencyinjection.10.0.10.nupkg.sha512",
-    "/home/fatma/.nuget/packages/mediatr/14.2.0/mediatr.14.2.0.nupkg.sha512",
-    "/home/fatma/.nuget/packages/mediatr.contracts/2.0.1/mediatr.contracts.2.0.1.nupkg.sha512",
-    "/home/fatma/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/10.0.0/microsoft.extensions.dependencyinjection.abstractions.10.0.0.nupkg.sha512",
-    "/home/fatma/.nuget/packages/microsoft.extensions.logging.abstractions/10.0.0/microsoft.extensions.logging.abstractions.10.0.0.nupkg.sha512",
-    "/home/fatma/.nuget/packages/microsoft.identitymodel.abstractions/8.14.0/microsoft.identitymodel.abstractions.8.14.0.nupkg.sha512",
-    "/home/fatma/.nuget/packages/microsoft.identitymodel.jsonwebtokens/8.14.0/microsoft.identitymodel.jsonwebtokens.8.14.0.nupkg.sha512",
-    "/home/fatma/.nuget/packages/microsoft.identitymodel.logging/8.14.0/microsoft.identitymodel.logging.8.14.0.nupkg.sha512",
-    "/home/fatma/.nuget/packages/microsoft.identitymodel.tokens/8.14.0/microsoft.identitymodel.tokens.8.14.0.nupkg.sha512",
-    "/home/fatma/.nuget/packages/system.diagnostics.diagnosticsource/10.0.0/system.diagnostics.diagnosticsource.10.0.0.nupkg.sha512"
+    "/home/fatma/.nuget/packages/mediator.abstractions/3.0.2/mediator.abstractions.3.0.2.nupkg.sha512",
+    "/home/fatma/.nuget/packages/microsoft.aspnetcore.authentication.jwtbearer/8.0.28/microsoft.aspnetcore.authentication.jwtbearer.8.0.28.nupkg.sha512",
+    "/home/fatma/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/9.0.0/microsoft.extensions.dependencyinjection.abstractions.9.0.0.nupkg.sha512",
+    "/home/fatma/.nuget/packages/microsoft.identitymodel.abstractions/7.1.2/microsoft.identitymodel.abstractions.7.1.2.nupkg.sha512",
+    "/home/fatma/.nuget/packages/microsoft.identitymodel.jsonwebtokens/7.1.2/microsoft.identitymodel.jsonwebtokens.7.1.2.nupkg.sha512",
+    "/home/fatma/.nuget/packages/microsoft.identitymodel.logging/7.1.2/microsoft.identitymodel.logging.7.1.2.nupkg.sha512",
+    "/home/fatma/.nuget/packages/microsoft.identitymodel.protocols/7.1.2/microsoft.identitymodel.protocols.7.1.2.nupkg.sha512",
+    "/home/fatma/.nuget/packages/microsoft.identitymodel.protocols.openidconnect/7.1.2/microsoft.identitymodel.protocols.openidconnect.7.1.2.nupkg.sha512",
+    "/home/fatma/.nuget/packages/microsoft.identitymodel.tokens/7.1.2/microsoft.identitymodel.tokens.7.1.2.nupkg.sha512",
+    "/home/fatma/.nuget/packages/questpdf/2026.7.1/questpdf.2026.7.1.nupkg.sha512",
+    "/home/fatma/.nuget/packages/system.identitymodel.tokens.jwt/7.1.2/system.identitymodel.tokens.jwt.7.1.2.nupkg.sha512"
   ],
   "logs": []
 }

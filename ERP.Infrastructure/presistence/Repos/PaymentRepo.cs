@@ -28,18 +28,21 @@ namespace ERP.Infrastructure.presistence.Repos
         {
              try
             {
-                using (SqlConnection connection = new SqlConnection(_Config.GetConnectionString("MyConn")))
+               var connection = _Context.Database.GetDbConnection() as SqlConnection;
+        
+                if (connection != null && connection.State != ConnectionState.Open)
                 {
                     await connection.OpenAsync();
-                    using (SqlCommand command = new SqlCommand("SP_Buy", connection))
+                }
+                    using (SqlCommand command = new SqlCommand("SP_Pay", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@Amount", PayParams.Amount);
-                        command.Parameters.AddWithValue("@Notes", PayParams.Notes);
-                        command.Parameters.AddWithValue("@SaleOrderId", PayParams.SaleOrderId);
+                        command.Parameters.AddWithValue("@Notes",  PayParams.Notes );
+                        command.Parameters.AddWithValue("@SaleOrderId", PayParams.SaleOrderId );
                         command.Parameters.AddWithValue("@PaymentMethod", PayParams.PaymentMethod);
-                        command.Parameters.AddWithValue("@PurchaseOrderId", PayParams.PurchaseOrderId);
-                        command.Parameters.AddWithValue("@ReferenceNumber", PayParams.ReferenceNumber);
+                        command.Parameters.AddWithValue("@PurchaseOrderId", PayParams.PurchaseOrderId );
+                        command.Parameters.AddWithValue("@ReferenceNumber", PayParams.ReferenceNumber );
                         command.Parameters.AddWithValue("@CreatedByUserId", PayParams.CreatedByUserId);
 
 
@@ -56,7 +59,7 @@ namespace ERP.Infrastructure.presistence.Repos
                         return (int)outputIdParam.Value;
 
                     }
-                }
+                
 
             }
             catch (Exception ex)

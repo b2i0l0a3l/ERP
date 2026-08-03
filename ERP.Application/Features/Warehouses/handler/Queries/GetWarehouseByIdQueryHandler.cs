@@ -2,7 +2,7 @@ using ERP.Application.Features.Warehouses.Requests.Queries;
 using ERP.Core.Interfaces;
 using ERP.Core.Models.WarehouseModels;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.Warehouses.Queries
 {
@@ -10,7 +10,7 @@ namespace ERP.Application.Features.Warehouses.Queries
     {
         private readonly IWarehouseRepo _repo;
         public GetWarehouseByIdQueryHandler(IWarehouseRepo repo) => _repo = repo;
-        public async Task<Result<WarehouseDTO>> Handle(GetWarehouseByIdQuery request, CancellationToken ct)
+        public async ValueTask<Result<WarehouseDTO>> Handle(GetWarehouseByIdQuery request, CancellationToken ct)
             => await _repo.GetById(request.Id);
     }
 }

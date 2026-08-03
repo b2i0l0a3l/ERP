@@ -2,7 +2,7 @@ using ERP.Application.Features.CustomerPhoneNumbers.Requests.Queries;
 using ERP.Core.Interfaces;
 using ERP.Core.Models.CustomerPhoneNumberModels;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.CustomerPhoneNumbers.Queries
 {
@@ -10,7 +10,7 @@ namespace ERP.Application.Features.CustomerPhoneNumbers.Queries
     {
         private readonly ICustomerPhoneNumberRepo _repo;
         public GetCustomerPhoneNumberByIdQueryHandler(ICustomerPhoneNumberRepo repo) => _repo = repo;
-        public async Task<Result<CustomerPhoneNumberDTO>> Handle(GetCustomerPhoneNumberByIdQuery request, CancellationToken ct)
+        public async ValueTask<Result<CustomerPhoneNumberDTO>> Handle(GetCustomerPhoneNumberByIdQuery request, CancellationToken ct)
             => await _repo.GetById(request.Id);
     }
 }

@@ -1,13 +1,14 @@
 using ERP.Application.Features.Warehouses.Requests.Commands;
 using ERP.Application.Features.Warehouses.Requests.Queries;
-using MediatR;
+using Mediator;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace ERP.Api.Controller
 {
     [Route("api/Warehouse")]
     [ApiController]
-    public class WarehouseController : BaseContoller
+    public class WarehouseController : BaseController
     {
         private readonly IMediator _mediator;
         public WarehouseController(IMediator mediator) => _mediator = mediator;
@@ -21,7 +22,6 @@ namespace ERP.Api.Controller
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Update(int id, UpdateWarehouseCommand command)
         {
@@ -40,6 +40,7 @@ namespace ERP.Api.Controller
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [OutputCache(Duration = 120, Tags = new[] { "warehouses-tag" })]
         public async Task<IActionResult> GetById(int id)
             => Handle(await _mediator.Send(new GetWarehouseByIdQuery { Id = id }));
 
@@ -47,15 +48,15 @@ namespace ERP.Api.Controller
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
+        [OutputCache(Duration = 120, Tags = new[] { "warehouses-tag" })]
         public async Task<IActionResult> GetByName(string name)
             => Handle(await _mediator.Send(new GetWarehouseByNameQuery { Name = name }));
 
         [HttpGet]
-          [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        
+        [OutputCache(Duration = 180, VaryByQueryKeys = new[] { "PageNumber", "PageSize" }, Tags = new[] { "warehouses-tag" })]
         public async Task<IActionResult> GetPaged([FromQuery] GetWarehousesPagedQuery query)
             => Handle(await _mediator.Send(query));
     }

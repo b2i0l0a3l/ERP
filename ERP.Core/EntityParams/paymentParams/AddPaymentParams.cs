@@ -10,6 +10,6 @@ namespace ERP.Core.EntityParams.paymentParams
         public string? Notes { get; set; }
         public string? ReferenceNumber { get; set; }
         public enPaymentMethod PaymentMethod { get; set; } = enPaymentMethod.Cash;
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateOnly CreatedAt { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
     }
 }

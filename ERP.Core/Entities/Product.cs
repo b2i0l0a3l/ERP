@@ -24,5 +24,6 @@ namespace ERP.Core.Entities
         public virtual ICollection<ReturnItem> ReturnItems { get; set; } = new List<ReturnItem>();
         public virtual ICollection<Inventory> Inventories { get; set; } = new List<Inventory>();
         public virtual ICollection<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
+        public virtual ICollection<InvoiceItem> InvoiceItems { get; set; } = new List<InvoiceItem>();
     }
 }

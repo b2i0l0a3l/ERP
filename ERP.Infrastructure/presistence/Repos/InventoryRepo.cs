@@ -143,22 +143,6 @@ namespace ERP.Infrastructure.presistence.Repos
             }
         }
 
-        public async Task<Result<List<InventoryDTO>>> GetLowStock()
-        {
-            try
-            {
-                List<InventoryDTO> items = await _Context.Inventories.AsNoTracking()
-                    .Where(i => i.IsDeleted == false && i.Quantity <= i.MinThreshold)
-                    .Select(i => new InventoryDTO() { Id = i.Id, WarehouseId = i.WarehouseId, WarehouseName = i.Warehouse.Name, ProductId = i.ProductId, ProductName = i.Product.Name, Quantity = i.Quantity, MinThreshold = i.MinThreshold, CreatedAt = i.CreatedAt })
-                    .ToListAsync();
-
-                return items;
-            }
-            catch (Exception ex)
-            {
-                _Logger.LogError("Error : {ex}", ex);
-                return new Error("InternelError", ErrorType.General, "Internel Error Happend");
-            }
-        }
+      
     }
 }

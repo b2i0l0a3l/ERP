@@ -10,7 +10,6 @@ namespace ERP.Core.Interfaces
         Task<Result<UserDTO>> GetByEmail(string Email);
         Task<Result<PagedResult<UserDTO>>> GetPaged(GetPagedAsyncParams Params);
         Task<Result<bool>> Delete(string Id);
-        Task<Result<string>> Add(AddUserParams Params);
         Task<Result<bool>> Update(string Id, UpdateUserParams Params);
     }
 }

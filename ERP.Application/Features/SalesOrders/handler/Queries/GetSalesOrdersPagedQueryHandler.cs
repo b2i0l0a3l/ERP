@@ -3,7 +3,7 @@ using ERP.Core.EntityParams.salesOrderParams;
 using ERP.Core.Interfaces;
 using ERP.Core.Models.SalesOrderModels;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.SalesOrders.Queries
 {
@@ -11,7 +11,7 @@ namespace ERP.Application.Features.SalesOrders.Queries
     {
         private readonly ISalesOrderRepo _repo;
         public GetSalesOrdersPagedQueryHandler(ISalesOrderRepo repo) => _repo = repo;
-        public async Task<Result<PagedResult<SalesOrderDTO>>> Handle(GetSalesOrdersPagedQuery request, CancellationToken ct)
+        public async ValueTask<Result<PagedResult<SalesOrderDTO>>> Handle(GetSalesOrdersPagedQuery request, CancellationToken ct)
             => await _repo.GetPaged(new GetPagedAsyncParams { PageNumber = request.PageNumber, PageSize = request.PageSize, CustomerId = request.CustomerId });
     }
 }

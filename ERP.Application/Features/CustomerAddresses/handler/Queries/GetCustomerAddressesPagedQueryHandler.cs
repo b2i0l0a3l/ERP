@@ -3,7 +3,7 @@ using ERP.Core.EntityParams.customerAddressParams;
 using ERP.Core.Interfaces;
 using ERP.Core.Models.CustomerAddressModels;
 using ERP.Core.shared;
-using MediatR;
+using Mediator;
 
 namespace ERP.Application.Features.CustomerAddresses.Queries
 {
@@ -11,7 +11,7 @@ namespace ERP.Application.Features.CustomerAddresses.Queries
     {
         private readonly ICustomerAddressRepo _repo;
         public GetCustomerAddressesPagedQueryHandler(ICustomerAddressRepo repo) => _repo = repo;
-        public async Task<Result<PagedResult<CustomerAddressDTO>>> Handle(GetCustomerAddressesPagedQuery request, CancellationToken ct)
+        public async ValueTask<Result<PagedResult<CustomerAddressDTO>>> Handle(GetCustomerAddressesPagedQuery request, CancellationToken ct)
             => await _repo.GetPaged(new GetPagedAsyncParams { PageNumber = request.PageNumber, PageSize = request.PageSize, CustomerId = request.CustomerId });
     }
 }

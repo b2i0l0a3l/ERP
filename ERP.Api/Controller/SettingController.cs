@@ -1,13 +1,14 @@
 using ERP.Application.Features.Settings.Requests.Commands;
 using ERP.Application.Features.Settings.Requests.Queries;
-using MediatR;
+using Mediator;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace ERP.Api.Controller
 {
     [Route("api/Setting")]
     [ApiController]
-    public class SettingController : BaseContoller
+    public class SettingController : BaseController
     {
         private readonly IMediator _mediator;
         public SettingController(IMediator mediator) => _mediator = mediator;
@@ -21,7 +22,6 @@ namespace ERP.Api.Controller
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Update(int id, UpdateSettingCommand command)
         {
@@ -40,6 +40,7 @@ namespace ERP.Api.Controller
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [OutputCache(Duration = 300, Tags = new[] { "settings-tag" })]
         public async Task<IActionResult> GetById(int id)
             => Handle(await _mediator.Send(new GetSettingByIdQuery { Id = id }));
 
@@ -47,7 +48,7 @@ namespace ERP.Api.Controller
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
+        [OutputCache(Duration = 300, Tags = new[] { "settings-tag" })]
         public async Task<IActionResult> GetByCompanyName(string companyName)
             => Handle(await _mediator.Send(new GetSettingByCompanyNameQuery { CompanyName = companyName }));
     }

@@ -1,13 +1,14 @@
 using ERP.Application.Features.SalesOrderItems.Requests.Commands;
 using ERP.Application.Features.SalesOrderItems.Requests.Queries;
-using MediatR;
+using Mediator;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace ERP.Api.Controller
 {
     [Route("api/SalesOrderItem")]
     [ApiController]
-    public class SalesOrderItemController : BaseContoller
+    public class SalesOrderItemController : BaseController
     {
         private readonly IMediator _mediator;
         public SalesOrderItemController(IMediator mediator) => _mediator = mediator;
@@ -21,7 +22,6 @@ namespace ERP.Api.Controller
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Update(int id, UpdateSalesOrderItemCommand command)
         {
@@ -40,6 +40,7 @@ namespace ERP.Api.Controller
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [OutputCache(Duration = 120, Tags = new[] { "sales-order-items-tag" })]
         public async Task<IActionResult> GetById(int id)
             => Handle(await _mediator.Send(new GetSalesOrderItemByIdQuery { Id = id }));
     }

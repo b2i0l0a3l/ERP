@@ -1,15 +1,16 @@
 
 using ERP.Core.Entities;
 using ERP.Infrastructure.presistence.configuration;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace ERP.Infrastructure.presistence
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<User>
     {
-        public AppDbContext(DbContextOptions options) : base(options) { }
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
         
-        public DbSet<User> Users { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<Return> Returns { get; set; }
         public DbSet<ReturnItem> ReturnItems { get; set; }
         public DbSet<Category> Categories { get; set; }
@@ -29,10 +30,30 @@ namespace ERP.Infrastructure.presistence
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<Setting> Settings { get; set; }
+        public DbSet<Invoice> Invoices { get; set; }
+        public DbSet<InvoiceItem> InvoiceItems { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // RefreshToken configuration
+            modelBuilder.Entity<RefreshToken>(entity =>
+            {
+                entity.HasKey(rt => rt.Id);
+                entity.Property(rt => rt.Token).IsRequired().HasMaxLength(500);
+                entity.Property(rt => rt.UserId).IsRequired().HasMaxLength(450);
+                entity.Property(rt => rt.ExpiresAt).IsRequired();
+                entity.Property(rt => rt.CreatedAt).IsRequired();
+                entity.HasOne(rt => rt.User)
+                      .WithMany()
+                      .HasForeignKey(rt => rt.UserId)
+                      .OnDelete(DeleteBehavior.Cascade);
+                entity.HasIndex(rt => rt.Token).IsUnique();
+                entity.HasIndex(rt => rt.UserId);
+            });
+
             modelBuilder.ApplyConfiguration(new BrandConfig());
             modelBuilder.ApplyConfiguration(new ReturnConfig());
             modelBuilder.ApplyConfiguration(new ReturnItemConfig());
@@ -51,6 +72,9 @@ namespace ERP.Infrastructure.presistence
             modelBuilder.ApplyConfiguration(new SettingConfig());
             modelBuilder.ApplyConfiguration(new WarehouseConfig());
             modelBuilder.ApplyConfiguration(new StockAdjustmentLogConfiguration());
+            modelBuilder.ApplyConfiguration(new InvoiceConfig());
+            modelBuilder.ApplyConfiguration(new InvoiceItemConfig());
+            modelBuilder.ApplyConfiguration(new NotificationConfig());
         }
     }   
 }

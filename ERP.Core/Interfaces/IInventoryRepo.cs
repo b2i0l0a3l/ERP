@@ -12,6 +12,5 @@ namespace ERP.Core.Interfaces
         Task<Result<bool>> Delete(int Id);
         Task<Result<int>> Add(AddInventoryParams Params);
         Task<Result<bool>> Update(int Id, UpdateInventoryParams Params);
-        Task<Result<List<InventoryDTO>>> GetLowStock();
     }
 }
