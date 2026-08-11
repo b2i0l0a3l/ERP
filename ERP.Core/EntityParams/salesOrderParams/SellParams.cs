@@ -9,7 +9,7 @@ namespace ERP.Core.EntityParams.salesOrderParams
     public record SellParams
     {
         public int WarehouseId { get; set; }
-        public int CustomerId { get; set; }
+        public int? CustomerId { get; set; }
         public enPaymentStatus PaymentStatus { get; set; } = enPaymentStatus.Unpaid;
         public decimal Discount { get; set; } = 0;
         public string CreatedByUserId { get; set; } = string.Empty;

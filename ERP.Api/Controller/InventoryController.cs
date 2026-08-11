@@ -4,10 +4,14 @@ using Mediator;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 
+using Microsoft.AspNetCore.Authorization;
+using ERP.Core.shared;
+
 namespace ERP.Api.Controller
 {
     [Route("api/Inventory")]
     [ApiController]
+    [Authorize(Policy = AppPolicies.StaffOrAdmin)]
     public class InventoryController : BaseController
     {
         private readonly IMediator _mediator;
@@ -56,7 +60,7 @@ namespace ERP.Api.Controller
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [OutputCache(Duration = 120, VaryByQueryKeys = new[] { "PageNumber", "PageSize" }, Tags = new[] { "inventories-tag" })]
+        [OutputCache(Duration = 120, VaryByQueryKeys = new[] { "PageNumber", "PageSize", "WarehouseId", "ProductId", "ProductName" }, Tags = new[] { "inventories-tag" })]
         public async Task<IActionResult> GetPaged([FromQuery] GetInventoriesPagedQuery query)
             => Handle(await _mediator.Send(query));
 

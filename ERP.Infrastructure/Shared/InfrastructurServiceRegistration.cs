@@ -2,6 +2,7 @@ using System.Text;
 using ERP.Core.Entities;
 using ERP.Core.Interfaces;
 using ERP.Core.Models.AuthModels;
+using ERP.Core.shared;
 using ERP.Infrastructure.presistence;
 using ERP.Infrastructure.presistence.Repos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -12,20 +13,25 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Mediator;
 using FluentValidation;
+using ERP.Infrastructure.Services;
+using Microsoft.AspNetCore.Hosting;
 
 namespace ERP.Infrastructure.Shared
 {
-    public static  class InfrastructurServiceRegistration
+    public static class InfrastructurServiceRegistration
     {
-        public static void AddInfrastructurServiceRegistration(this IServiceCollection services, IConfiguration configuration)
+        public static void AddInfrastructurServiceRegistration(this IServiceCollection services, IConfiguration configuration,IWebHostEnvironment environment)
         {
             string? connectionString = configuration.GetConnectionString("MyConn");
             if (string.IsNullOrEmpty(connectionString))
             {
                 throw new InvalidOperationException("Connection String not found");
-            } 
+            }
             services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(connectionString));
+            options.UseSqlServer(connectionString, sqlOptions =>
+            {
+                sqlOptions.CommandTimeout(120);
+            }));
 
             // ─── ASP.NET Identity ───────────────────────────────────────
             services.AddIdentity<User, IdentityRole>(options =>
@@ -42,7 +48,7 @@ namespace ERP.Infrastructure.Shared
             .AddDefaultTokenProviders();
 
             // ─── JWT Configuration ──────────────────────────────────────
-       
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -61,17 +67,39 @@ namespace ERP.Infrastructure.Shared
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:KEY"] ?? "defaultt0s3c2hlla1anndbi1lad1eut_SecureSuperSecretKey256Bits")),
                     ClockSkew = TimeSpan.Zero
                 };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) &&
+                            path.StartsWithSegments("/hubs/notifications"))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
-            services.AddAuthorization();
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(AppPolicies.AdminOnly, policy => policy.RequireRole(AppRoles.Admin));
+                options.AddPolicy(AppPolicies.StaffOrAdmin, policy => policy.RequireRole(AppRoles.Admin, AppRoles.Cashier));
+                options.AddPolicy(AppPolicies.UserOrAdmin, policy => policy.RequireRole(AppRoles.Admin, AppRoles.User));
+                options.AddPolicy(AppPolicies.AllRoles, policy => policy.RequireRole(AppRoles.Admin, AppRoles.Cashier, AppRoles.User));
+            });
 
             // ─── Mediator ───────────────────────────────────────────────
             services.AddMediator(options => options.ServiceLifetime = ServiceLifetime.Scoped);
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-        
+
             // ─── Services ───────────────────────────────────────────────
             services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<IBuildPdf, BuildPDF>();
+            services.AddSingleton<IBuildPdf, BuildPDF>();
             services.AddScoped<IDashboardRepo, DashboardRepo>();
             services.AddScoped<IProductRepo, ProductRepo>();
             services.AddScoped<IBrandRepo, BrandRepo>();
@@ -97,6 +125,20 @@ namespace ERP.Infrastructure.Shared
             services.AddScoped<IRoleRepo, RoleRepo>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IRefreshTokenRepo, RefreshTokenRepo>();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+
+            string wwwrootPath = environment.WebRootPath ?? Path.Combine(environment.ContentRootPath, "wwwroot");
+
+            services.AddScoped<IGetFile>(x=> new GetFileService(wwwrootPath));
+
+            services.AddSingleton<SavingInvoiceLocal>();
+            services.AddSingleton<ISavingInvoiceQueue>(sp => sp.GetRequiredService<SavingInvoiceLocal>());
+            services.AddHostedService(sp => sp.GetRequiredService<SavingInvoiceLocal>());
+
+            services.AddSingleton<NotificationChannel>();
+            services.AddSingleton<INotificationChannel>(sp => sp.GetRequiredService<NotificationChannel>());
+            services.AddHostedService(sp => sp.GetRequiredService<NotificationChannel>());
         }
     }
 }

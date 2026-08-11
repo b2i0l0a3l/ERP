@@ -11,6 +11,6 @@ namespace ERP.Core.Interfaces
         Task<Result<bool>> Delete(int Id);
         Task<Result<int>> Add(AddPurchaseOrderParams Params);
         Task<Result<bool>> Update(int Id, UpdatePurchaseOrderParams Params);
-        Task<Result<int>> Buy(BuyParams BuyParams);
+        Task<Result<int>> Buy(BuyParams BuyParams, CancellationToken cancellationToken = default);
     }
 }

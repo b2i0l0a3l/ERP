@@ -12,6 +12,6 @@ namespace ERP.Application.Features.PurchaseOrders.Queries
         private readonly IPurchaseOrderRepo _repo;
         public GetPurchaseOrdersPagedQueryHandler(IPurchaseOrderRepo repo) => _repo = repo;
         public async ValueTask<Result<PagedResult<PurchaseOrderDTO>>> Handle(GetPurchaseOrdersPagedQuery request, CancellationToken ct)
-            => await _repo.GetPaged(new GetPagedAsyncParams { PageNumber = request.PageNumber, PageSize = request.PageSize, SupplierId = request.SupplierId });
+            => await _repo.GetPaged(new GetPagedAsyncParams { PageNumber = request.PageNumber, PageSize = request.PageSize, SupplierId = request.SupplierId, PaymentStatus = request.PaymentStatus });
     }
 }

@@ -8,6 +8,7 @@ namespace ERP.Core.Models.SalesOrderModels
         public int? CustomerId { get; set; }
         public string? CustomerName { get; set; }
         public enStatus Status { get; set; }
+        public enPaymentStatus PaymentStatus { get; set; }
         public decimal Discount { get; set; }
         public decimal Total { get; set; }
         public DateOnly CreatedAt { get; set; }

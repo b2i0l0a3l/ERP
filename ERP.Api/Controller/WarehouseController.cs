@@ -4,22 +4,28 @@ using Mediator;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 
+using Microsoft.AspNetCore.Authorization;
+using ERP.Core.shared;
+
 namespace ERP.Api.Controller
 {
     [Route("api/Warehouse")]
     [ApiController]
+    [Authorize(Policy = AppPolicies.StaffOrAdmin)]
     public class WarehouseController : BaseController
     {
         private readonly IMediator _mediator;
         public WarehouseController(IMediator mediator) => _mediator = mediator;
 
         [HttpPost]
+        [Authorize(Policy = AppPolicies.AdminOnly)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<IActionResult> Create(CreateWarehouseCommand command)
             => Handle(await _mediator.Send(command));
 
         [HttpPut("{id}")]
+        [Authorize(Policy = AppPolicies.AdminOnly)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -30,6 +36,7 @@ namespace ERP.Api.Controller
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = AppPolicies.AdminOnly)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

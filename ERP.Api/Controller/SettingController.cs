@@ -4,10 +4,14 @@ using Mediator;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 
+using Microsoft.AspNetCore.Authorization;
+using ERP.Core.shared;
+
 namespace ERP.Api.Controller
 {
     [Route("api/Setting")]
     [ApiController]
+    [Authorize(Policy = AppPolicies.AdminOnly)]
     public class SettingController : BaseController
     {
         private readonly IMediator _mediator;

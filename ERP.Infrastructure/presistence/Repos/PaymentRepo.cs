@@ -38,7 +38,7 @@ namespace ERP.Infrastructure.presistence.Repos
                     {
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@Amount", PayParams.Amount);
-                        command.Parameters.AddWithValue("@Notes",  PayParams.Notes );
+                        command.Parameters.AddWithValue("@Notes", PayParams.Notes );
                         command.Parameters.AddWithValue("@SaleOrderId", PayParams.SaleOrderId );
                         command.Parameters.AddWithValue("@PaymentMethod", PayParams.PaymentMethod);
                         command.Parameters.AddWithValue("@PurchaseOrderId", PayParams.PurchaseOrderId );

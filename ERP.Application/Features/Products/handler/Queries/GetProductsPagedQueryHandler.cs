@@ -12,6 +12,6 @@ namespace ERP.Application.Features.Products.Queries
         private readonly IProductRepo _repo;
         public GetProductsPagedQueryHandler(IProductRepo repo) => _repo = repo;
         public async ValueTask<Result<PagedResult<ProductDTO>>> Handle(GetProductsPagedQuery request, CancellationToken ct)
-            => await _repo.GetPaged(new GetPagedAsyncParams { PageNumber = request.PageNumber, PageSize = request.PageSize, ProductName = request.ProductName, BarCode = request.BarCode });
+            => await _repo.GetPaged(new GetPagedAsyncParams { PageNumber = request.PageNumber, PageSize = request.PageSize, ProductName = request.ProductName, BarCode = request.BarCode, CategoryId = request.CategoryId, BrandId = request.BrandId });
     }
 }

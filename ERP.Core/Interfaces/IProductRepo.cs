@@ -16,8 +16,8 @@ namespace ERP.Core.Interfaces
         Task<Result<ProductDTO>> GetByBarcode(string Barcode);
         Task<Result<ProductDTO>> GetByName(string Name);
         Task<Result<PagedResult<ProductDTO>>> GetPaged(GetPagedAsyncParams Params);
-        Task<Result<bool>> Delete(int Id);
-        Task<Result<int>> Add(AddProductParams Params);
+        Task<Result<bool>> Delete(int Id, string? DeletedByUserId, CancellationToken cancellationToken = default);
+        Task<Result<int>> Add(AddProductParams Params, CancellationToken cancellationToken = default);
         Task<Result<bool>> Update(int Id, UpdateProductParams Params);
         Task<Result<PagedResult<ProductDTO>>> Search(string Query, int PageNumber, int PageSize);
 

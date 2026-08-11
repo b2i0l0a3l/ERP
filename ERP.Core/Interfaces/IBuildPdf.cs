@@ -8,6 +8,6 @@ namespace ERP.Core.Interfaces
 {
     public interface IBuildPdf
     {
-        byte[] BuildPdf(InvoiceDTO invoice, List<InvoiceItemDTO> items);
+        Stream BuildPdf(InvoiceDTO invoice, List<InvoiceItemDTO> items);
     }
 }

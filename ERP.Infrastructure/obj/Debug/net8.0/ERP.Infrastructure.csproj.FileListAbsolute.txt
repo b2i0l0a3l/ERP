@@ -37,3 +37,11 @@
 /home/fatma/ERP/ERP.Infrastructure/bin/Debug/net8.0/LatoFont/Lato-Thin.ttf
 /home/fatma/ERP/ERP.Infrastructure/bin/Debug/net8.0/LatoFont/Lato-ThinItalic.ttf
 /home/fatma/ERP/ERP.Infrastructure/bin/Debug/net8.0/LatoFont/OFL.txt
+/home/fatma/ERP/ERP.Infrastructure/bin/Debug/net8.0/Shared/Fonts/Cairo-Black.ttf
+/home/fatma/ERP/ERP.Infrastructure/bin/Debug/net8.0/Shared/Fonts/Cairo-Bold.ttf
+/home/fatma/ERP/ERP.Infrastructure/bin/Debug/net8.0/Shared/Fonts/Cairo-ExtraBold.ttf
+/home/fatma/ERP/ERP.Infrastructure/bin/Debug/net8.0/Shared/Fonts/Cairo-ExtraLight.ttf
+/home/fatma/ERP/ERP.Infrastructure/bin/Debug/net8.0/Shared/Fonts/Cairo-Light.ttf
+/home/fatma/ERP/ERP.Infrastructure/bin/Debug/net8.0/Shared/Fonts/Cairo-Medium.ttf
+/home/fatma/ERP/ERP.Infrastructure/bin/Debug/net8.0/Shared/Fonts/Cairo-Regular.ttf
+/home/fatma/ERP/ERP.Infrastructure/bin/Debug/net8.0/Shared/Fonts/Cairo-SemiBold.ttf

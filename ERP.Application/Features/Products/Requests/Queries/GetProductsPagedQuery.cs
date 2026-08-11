@@ -10,5 +10,7 @@ namespace ERP.Application.Features.Products.Requests.Queries
         public int PageSize { get; set; } = 20;
         public string? ProductName { get; set; }
         public string? BarCode { get; set; }
+        public int? CategoryId { get; set; }
+        public int? BrandId { get; set; }
     }
 }

@@ -5,10 +5,13 @@ using Mediator;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+using Microsoft.AspNetCore.Authorization;
+
 namespace ERP.Api.Controller
 {
     [Route("api/Return")]
     [ApiController]
+    [Authorize(Policy = AppPolicies.StaffOrAdmin)]
     public class ReturnController : BaseController
     {
         private readonly IMediator _mediator;
@@ -28,8 +31,8 @@ namespace ERP.Api.Controller
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Delete(int id, [FromQuery] string userId)
-            => Handle<Result>(await _mediator.Send(new DeleteReturnCommand { ReturnId = id, UserId = userId }));
+        public async Task<IActionResult> Delete(int id)
+            => Handle<Result>(await _mediator.Send(new DeleteReturnCommand { ReturnId = id }));
 
         [HttpPost("{id}/undo")]
         [ProducesResponseType(StatusCodes.Status200OK)]

@@ -1,4 +1,5 @@
 using ERP.Core.EntityParams.supplierParams;
+using ERP.Core.Models.SupplierBalanceModels;
 using ERP.Core.Models.SupplierModels;
 using ERP.Core.shared;
 
@@ -12,5 +13,6 @@ namespace ERP.Core.Interfaces
         Task<Result<bool>> Delete(int Id);
         Task<Result<int>> Add(AddSupplierParams Params);
         Task<Result<bool>> Update(int Id, UpdateSupplierParams Params);
+        Task<Result<SupplierBalanceDTO>> GetSupplierBalance(int SupplierId);
     }
 }

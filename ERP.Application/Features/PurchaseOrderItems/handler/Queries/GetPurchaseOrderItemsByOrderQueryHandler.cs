@@ -6,11 +6,11 @@ using Mediator;
 
 namespace ERP.Application.Features.PurchaseOrderItems.Queries
 {
-    public class GetPurchaseOrderItemsByOrderQueryHandler : IRequestHandler<GetPurchaseOrderItemsByOrderQuery, Result<List<PurchaseOrderItemDTO>>>
+    public class GetPurchaseOrderItemsByOrderQueryHandler : IRequestHandler<GetPurchaseOrderItemsByOrderQuery, Result<PagedResult<PurchaseOrderItemDTO>>>
     {
         private readonly IPurchaseOrderItemRepo _repo;
         public GetPurchaseOrderItemsByOrderQueryHandler(IPurchaseOrderItemRepo repo) => _repo = repo;
-        public async ValueTask<Result<List<PurchaseOrderItemDTO>>> Handle(GetPurchaseOrderItemsByOrderQuery request, CancellationToken ct)
-            => await _repo.GetByPurchaseOrderId(request.PurchaseOrderId);
+        public async ValueTask<Result<PagedResult<PurchaseOrderItemDTO>>> Handle(GetPurchaseOrderItemsByOrderQuery request, CancellationToken ct)
+            => await _repo.GetByPurchaseOrderId(request.PurchaseOrderId, request.PageNumber, request.PageSize);
     }
 }

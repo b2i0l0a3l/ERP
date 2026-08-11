@@ -4,10 +4,14 @@ using Mediator;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 
+using Microsoft.AspNetCore.Authorization;
+using ERP.Core.shared;
+
 namespace ERP.Api.Controller
 {
     [Route("api/Notification")]
     [ApiController]
+    [Authorize(Policy = AppPolicies.AllRoles)]
     public class NotificationController : BaseController
     {
         private readonly IMediator _mediator;

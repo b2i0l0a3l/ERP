@@ -1,0 +1,8 @@
+2026-08-04 17:26:36 [Warning] The WebRootPath was not found: "/home/fatma/ERP/ERP.Api/bin/Debug/net8.0/wwwroot". Static files may be unavailable.
+2026-08-04 17:26:36 [Information] Now listening on: "http://localhost:5000"
+2026-08-04 17:26:36 [Information] Application started. Press Ctrl+C to shut down.
+2026-08-04 17:26:36 [Information] Hosting environment: "Production"
+2026-08-04 17:26:36 [Information] Content root path: "/home/fatma/ERP/ERP.Api/bin/Debug/net8.0"
+2026-08-04 17:27:11 [Warning] Failed to determine the https port for redirect.
+2026-08-04 17:27:18 [Information] Handled "/"
+2026-08-04 17:28:47 [Information] Application is shutting down...

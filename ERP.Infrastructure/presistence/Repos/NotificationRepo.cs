@@ -1,5 +1,6 @@
 using ERP.Core.Entities;
 using ERP.Core.EntityParams.notificationParams;
+using ERP.Core.enums;
 using ERP.Core.Interfaces;
 using ERP.Core.Models.NotificationModels;
 using ERP.Core.shared;
@@ -155,6 +156,71 @@ namespace ERP.Infrastructure.presistence.Repos
             catch (Exception ex)
             {
                 _Logger.LogError("Error : {ex}", ex);
+                return new Error("InternelError", ErrorType.General, "Internel Error Happend");
+            }
+        }
+
+        public async Task<Result<HashSet<int>>> GetAlreadyNotifiedEntityIds(enNotificationType type, string relatedEntityType, DateTime since)
+        {
+            try
+            {
+                var ids = await _Context.Notifications
+                    .AsNoTracking()
+                    .Where(n => n.Type == type
+                                && n.RelatedEntityType == relatedEntityType
+                                && n.CreatedAt >= since
+                                && n.RelatedEntityId.HasValue)
+                    .Select(n => n.RelatedEntityId!.Value)
+                    .ToListAsync();
+
+                return new HashSet<int>(ids);
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError("Error in GetAlreadyNotifiedEntityIds: {ex}", ex);
+                return new Error("InternelError", ErrorType.General, "Internel Error Happend");
+            }
+        }
+
+        public async Task<Result<List<NotificationDTO>>> AddBatch(List<AddNotificationParams> paramsList)
+        {
+            try
+            {
+                var notifications = paramsList.Select(p => new Notification
+                {
+                    Type = p.Type,
+                    Priority = p.Priority,
+                    Title = p.Title,
+                    Message = p.Message,
+                    RelatedEntityType = p.RelatedEntityType,
+                    RelatedEntityId = p.RelatedEntityId,
+                    TargetUserId = p.TargetUserId,
+                    CreatedAt = DateTime.UtcNow,
+                    IsRead = false
+                }).ToList();
+
+                _Context.Notifications.AddRange(notifications);
+                await _Context.SaveChangesAsync();
+
+                var dtos = notifications.Select(n => new NotificationDTO
+                {
+                    Id = n.Id,
+                    Type = n.Type,
+                    Priority = n.Priority,
+                    Title = n.Title,
+                    Message = n.Message,
+                    RelatedEntityType = n.RelatedEntityType,
+                    RelatedEntityId = n.RelatedEntityId,
+                    TargetUserId = n.TargetUserId,
+                    CreatedAt = n.CreatedAt,
+                    IsRead = n.IsRead
+                }).ToList();
+
+                return dtos;
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError("Error in AddBatch: {ex}", ex);
                 return new Error("InternelError", ErrorType.General, "Internel Error Happend");
             }
         }

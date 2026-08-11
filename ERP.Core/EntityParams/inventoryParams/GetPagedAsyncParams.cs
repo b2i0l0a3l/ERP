@@ -6,5 +6,6 @@ namespace ERP.Core.EntityParams.inventoryParams
         public int PageSize { get; set; } = 20;
         public int? WarehouseId { get; set; }
         public int? ProductId { get; set; }
+        public string? ProductName { get; set; }
     }
 }

@@ -8,6 +8,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using ERP.Infrastructure.Shared;
 
 namespace ERP.Infrastructure.presistence.Repos
 {
@@ -113,7 +114,7 @@ namespace ERP.Infrastructure.presistence.Repos
             {
                 SalesOrderDTO? order = await _Context.SalesOrders.AsNoTracking()
                     .Where(o => o.Id == Id && o.IsDeleted == false)
-                    .Select(o => new SalesOrderDTO() { Id = o.Id, CustomerId = o.CustomerId, CustomerName = o.Customer != null ? o.Customer.FirstName + " " + o.Customer.LastName : null, Status = o.Status, Discount = o.Discount, Total = o.Total, CreatedAt = o.CreatedAt })
+                    .Select(o => new SalesOrderDTO() { Id = o.Id, CustomerId = o.CustomerId, CustomerName = o.Customer != null ? o.Customer.FirstName + " " + o.Customer.LastName : null, Status = o.Status, PaymentStatus = o.PaymentStatus, Discount = o.Discount, Total = o.Total, CreatedAt = o.CreatedAt })
                     .SingleOrDefaultAsync();
 
                 if (order == null) return Errors.SalesOrderNotFound;
@@ -131,7 +132,7 @@ namespace ERP.Infrastructure.presistence.Repos
             try
             {
                 IQueryable<SalesOrder> query = _Context.SalesOrders.AsNoTracking()
-                    .Where(o => o.IsDeleted == false && (Params.CustomerId == null || o.CustomerId == Params.CustomerId));
+                    .Where(o => o.IsDeleted == false && (Params.CustomerId == null || o.CustomerId == Params.CustomerId) && (Params.PaymentStatus == null || o.PaymentStatus == Params.PaymentStatus));
 
                 int count = await query.CountAsync();
 
@@ -139,7 +140,7 @@ namespace ERP.Infrastructure.presistence.Repos
                     .OrderByDescending(o => o.CreatedAt)
                     .Skip((Params.PageNumber - 1) * Params.PageSize)
                     .Take(Params.PageSize)
-                    .Select(o => new SalesOrderDTO() { Id = o.Id, CustomerId = o.CustomerId, CustomerName = o.Customer != null ? o.Customer.FirstName + " " + o.Customer.LastName : null, Status = o.Status, Discount = o.Discount, Total = o.Total, CreatedAt = o.CreatedAt })
+                    .Select(o => new SalesOrderDTO() { Id = o.Id, CustomerId = o.CustomerId, CustomerName = o.Customer != null ? o.Customer.FirstName + " " + o.Customer.LastName : null, Status = o.Status, PaymentStatus = o.PaymentStatus, Discount = o.Discount, Total = o.Total, CreatedAt = o.CreatedAt })
                     .ToListAsync();
 
                 return new PagedResult<SalesOrderDTO>()
@@ -189,7 +190,7 @@ namespace ERP.Infrastructure.presistence.Repos
                     using (SqlCommand command = new SqlCommand("SP_Sell", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
-                        command.Parameters.AddWithValue("@CustomerId", sellParams.CustomerId );
+                        command.Parameters.AddWithValueOrNull("@CustomerId", sellParams.CustomerId);
                         command.Parameters.AddWithValue("@WarehouseId", sellParams.WarehouseId);
                         command.Parameters.AddWithValue("@Discount", sellParams.Discount);
                         command.Parameters.AddWithValue("@CreatedByUserId", sellParams.CreatedByUserId);

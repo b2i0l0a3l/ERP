@@ -4,10 +4,14 @@ using Mediator;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 
+using Microsoft.AspNetCore.Authorization;
+using ERP.Core.shared;
+
 namespace ERP.Api.Controller
 {
     [Route("api/Supplier")]
     [ApiController]
+    [Authorize(Policy = AppPolicies.StaffOrAdmin)]
     public class SupplierController : BaseController
     {
         private readonly IMediator _mediator;
@@ -69,5 +73,12 @@ namespace ERP.Api.Controller
             query.SupplierId = id;
             return Handle(await _mediator.Send(query));
         }
+
+        [HttpGet("{id}/balance")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [OutputCache(Duration = 60, Tags = new[] { "suppliers-tag" })]
+        public async Task<IActionResult> GetBalance(int id)
+            => Handle(await _mediator.Send(new GetSupplierBalanceQuery { SupplierId = id }));
     }
 }

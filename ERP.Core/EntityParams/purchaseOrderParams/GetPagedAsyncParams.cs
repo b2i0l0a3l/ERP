@@ -1,3 +1,5 @@
+using ERP.Core.enums;
+
 namespace ERP.Core.EntityParams.purchaseOrderParams
 {
     public record GetPagedAsyncParams
@@ -5,5 +7,6 @@ namespace ERP.Core.EntityParams.purchaseOrderParams
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 20;
         public int? SupplierId { get; set; }
+        public enPaymentStatus? PaymentStatus { get; set; }
     }
 }

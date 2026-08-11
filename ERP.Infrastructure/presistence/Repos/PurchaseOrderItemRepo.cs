@@ -126,16 +126,27 @@ namespace ERP.Infrastructure.presistence.Repos
             }
         }
 
-        public async Task<Result<List<PurchaseOrderItemDTO>>> GetByPurchaseOrderId(int PurchaseOrderId)
+        public async Task<Result<PagedResult<PurchaseOrderItemDTO>>> GetByPurchaseOrderId(int PurchaseOrderId, int PageNumber, int PageSize)
         {
             try
             {
-                List<PurchaseOrderItemDTO> items = await _Context.PurchaseOrderItems.AsNoTracking()
-                    .Where(i => i.PurchaseOrderId == PurchaseOrderId && i.IsDeleted == false)
+                IQueryable<PurchaseOrderItem> query = _Context.PurchaseOrderItems.AsNoTracking()
+                    .Where(i => i.PurchaseOrderId == PurchaseOrderId && i.IsDeleted == false);
+                int count = await query.CountAsync();
+
+                List<PurchaseOrderItemDTO> items = await query
+                    .Skip((PageNumber - 1) * PageSize)
+                    .Take(PageSize)
                     .Select(i => new PurchaseOrderItemDTO() { Id = i.Id, PurchaseOrderId = i.PurchaseOrderId, ProductId = i.ProductId, ProductName = i.Product.Name, Quantity = i.Quantity, Price = i.Price, CreatedAt = i.CreatedAt })
                     .ToListAsync();
 
-                return items;
+                return new PagedResult<PurchaseOrderItemDTO>()
+                {
+                    Items = items,
+                    PageNumber = PageNumber,
+                    PageSize = PageSize,
+                    TotalCount = count
+                };
             }
             catch (Exception ex)
             {

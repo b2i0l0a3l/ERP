@@ -13,7 +13,7 @@ namespace ERP.Core.Entities
         public bool ShowImagesInInvoice { get; set; } = false;
         public int WarehouseId { get; set; }
         public decimal Tax { get; set; }
-
+        public string? PhoneNumbder { get; set; }
         public virtual Warehouse Warehouse { get; set; } = new();
     }
 }

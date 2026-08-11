@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ERP.Core.shared
 {
-    public enum ErrorType { NotFound,Conflict,Forbidden, Validation, Unauthorized,General }
+    public enum ErrorType { NotFound, Conflict, Forbidden, Validation, Unauthorized, General }
 
     public record Error(string Id, ErrorType Type, string Description);
 
@@ -37,6 +37,7 @@ namespace ERP.Core.shared
 
         // Auth Errors
         public static Error InvalidCredentials { get; } = new("InvalidCredentials", ErrorType.Unauthorized, "Invalid email or password.");
+        public static Error UserNotAuthorized { get; } = new("UserNotAuthorized", ErrorType.Unauthorized, "User Not Authorized.");
         public static Error RefreshtokenRevoked { get; } = new("RefreshtokenRevoked", ErrorType.Unauthorized, "Refresh token is revoked.");
         public static Error RefreshTokenExpired { get; } = new("RefreshTokenExpired", ErrorType.Unauthorized, "Refresh token is Expired.");
         public static Error AccountDeactivated { get; } = new("AccountDeactivated", ErrorType.Forbidden, "This account has been deactivated.");

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using ERP.Core.Entities;
+using ERP.Core.enums;
 using ERP.Core.Interfaces;
 using ERP.Core.Models.DashboardModels;
 using ERP.Core.Models.InventoryModels;
@@ -36,6 +38,7 @@ namespace ERP.Infrastructure.presistence.Repos
                 using (SqlCommand command = new SqlCommand("SP_GetDashboardSummary", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
+                    command.CommandTimeout = 120;
 
                     using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
@@ -86,6 +89,7 @@ namespace ERP.Infrastructure.presistence.Repos
                 using (SqlCommand command = new SqlCommand("SP_GetSalesReport", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
+                    command.CommandTimeout = 120;
                     command.Parameters.AddWithValue("@From", From);
                     command.Parameters.AddWithValue("@To", To);
 
@@ -134,6 +138,7 @@ namespace ERP.Infrastructure.presistence.Repos
                 using (SqlCommand command = new SqlCommand("SP_PurchaseReport", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
+                    command.CommandTimeout = 120;
                     command.Parameters.AddWithValue("@From", From);
                     command.Parameters.AddWithValue("@To", To);
 
@@ -183,6 +188,122 @@ namespace ERP.Infrastructure.presistence.Repos
                 return new Error("InternelError", ErrorType.General, "Internel Error Happend");
             }
         }
-  
+
+        public async Task<Result<List<BestProductModel>>> GetBestProducts(int count)
+        {
+            try
+            {
+                var aggregated = await _Context.SalesOrderItems
+                    .AsNoTracking()
+                    .Where(item => !item.IsDeleted && !item.SalesOrder.IsDeleted)
+                    .GroupBy(item => item.ProductId)
+                    .Select(group => new
+                    {
+                        ProductId = group.Key,
+                        TotalQuantitySold = group.Sum(x => x.Quantity),
+                        TotalRevenue = group.Sum(x => x.Total)
+                    })
+                    .OrderByDescending(x => x.TotalQuantitySold)
+                    .Take(count)
+                    .ToListAsync();
+
+                var productIds = aggregated.Select(x => x.ProductId).ToList();
+                var productNames = await _Context.Products
+                    .AsNoTracking()
+                    .Where(p => productIds.Contains(p.Id))
+                    .Select(p => new { p.Id, p.Name })
+                    .ToDictionaryAsync(p => p.Id, p => p.Name);
+
+                var result = aggregated.Select(x => new BestProductModel
+                {
+                    ProductId = x.ProductId,
+                    ProductName = productNames.GetValueOrDefault(x.ProductId, "Unknown"),
+                    TotalQuantitySold = x.TotalQuantitySold,
+                    TotalRevenue = x.TotalRevenue
+                }).ToList();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError("Error in GetBestProducts: {ex}", ex);
+                return new Error("InternelError", ErrorType.General, "Internal Error Happend");
+            }
+        }
+
+        public async Task<Result<List<BestEmployeeModel>>> GetBestEmployees(int count)
+        {
+            try
+            {
+                var aggregated = await _Context.SalesOrders
+                    .AsNoTracking()
+                    .Where(so => !so.IsDeleted && so.CreatedByUserId != null)
+                    .GroupBy(so => so.CreatedByUserId!)
+                    .Select(group => new
+                    {
+                        EmployeeId = group.Key,
+                        TotalOrdersCount = group.Count(),
+                        TotalSalesAmount = group.Sum(x => x.Total)
+                    })
+                    .OrderByDescending(x => x.TotalSalesAmount)
+                    .Take(count)
+                    .ToListAsync();
+
+                var employeeIds = aggregated.Select(x => x.EmployeeId).ToList();
+                var employees = await _Context.Users
+                    .AsNoTracking()
+                    .Where(u => employeeIds.Contains(u.Id))
+                    .Select(u => new { u.Id, u.FirstName, u.LastName, u.Email })
+                    .ToDictionaryAsync(u => u.Id, u => u);
+
+                var result = aggregated.Select(x =>
+                {
+                    var emp = employees.GetValueOrDefault(x.EmployeeId);
+                    return new BestEmployeeModel
+                    {
+                        EmployeeId = x.EmployeeId,
+                        FirstName = emp?.FirstName ?? "Unknown",
+                        LastName = emp?.LastName ?? "",
+                        Email = emp?.Email ?? "",
+                        TotalOrdersCount = x.TotalOrdersCount,
+                        TotalSalesAmount = x.TotalSalesAmount
+                    };
+                }).ToList();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError("Error in GetBestEmployees: {ex}", ex);
+                return new Error("InternelError", ErrorType.General, "Internal Error Happend");
+            }
+        }
+
+        public async Task<Result<List<OverdueOrderDTO>>> GetOverdueOrders(DateOnly thresholdDate)
+        {
+            try
+            {
+                var orders = await _Context.SalesOrders
+                    .AsNoTracking()
+                    .Where(so => !so.IsDeleted
+                                 && so.PaymentStatus != enPaymentStatus.FullyPaid
+                                 && so.CreatedAt <= thresholdDate)
+                    .Select(so => new OverdueOrderDTO
+                    {
+                        OrderId = so.Id,
+                        Total = so.Total,
+                        PaidAmount = so.PaidAmount,
+                        RemainingBalance = so.Total - so.PaidAmount
+                    })
+                    .ToListAsync();
+
+                return orders;
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError("Error in GetOverdueOrders: {ex}", ex);
+                return new Error("InternelError", ErrorType.General, "Internal Error Happend");
+            }
+        }
     }
 }

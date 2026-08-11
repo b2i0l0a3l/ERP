@@ -8,5 +8,6 @@ namespace ERP.Core.Interfaces
         Task<RefreshToken?> GetByEmailAsync(string email);
         Task<Result<bool>> AddAsync(RefreshToken refreshToken);
         Task<Result<bool>> UpdateAsync(RefreshToken refreshToken);
+        Task<Result<bool>> RevokeRefreshTokenAsync(string UserId);
     }
 }

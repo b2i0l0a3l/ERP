@@ -13,7 +13,6 @@ namespace ERP.Core.Entities
         public decimal Amount { get; set; }
         public string? Notes { get; set; }
         public string? ReferenceNumber { get; set; }
-      
 
         public enPaymentMethod PaymentMethod { get; set; } = enPaymentMethod.Cash;
         public virtual PurchaseOrder? PurchaseOrder { get; set; }

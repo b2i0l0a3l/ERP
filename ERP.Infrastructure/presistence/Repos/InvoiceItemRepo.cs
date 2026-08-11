@@ -18,7 +18,7 @@ namespace ERP.Infrastructure.presistence.Repos
             _Logger = logger;
         }
 
-       
+
 
         public async Task<Result<bool>> Delete(int Id)
         {
@@ -48,7 +48,7 @@ namespace ERP.Infrastructure.presistence.Repos
                         Id = i.Id,
                         InvoiceId = i.InvoiceId,
                         ProductId = i.ProductId,
-                        ProductName = i.Product.Name , 
+                        ProductName = i.Product.Name,
                         Description = i.Description,
                         Quantity = i.Quantity,
                         UnitPrice = i.UnitPrice,
@@ -111,14 +111,46 @@ namespace ERP.Infrastructure.presistence.Repos
             }
         }
 
-
-
-        public async Task<Result<List<InvoiceItemDTO>>> GetByInvoiceId(int InvoiceId)
+public async Task<Result<List<InvoiceItemDTO>>> GetByInvoiceId(int InvoiceId)
         {
             try
             {
                 List<InvoiceItemDTO> items = await _Context.InvoiceItems.AsNoTracking()
                     .Where(i => i.InvoiceId == InvoiceId && i.IsDeleted == false)
+                    .Select(i => new InvoiceItemDTO()
+                    {
+                        Id = i.Id,
+                        InvoiceId = i.InvoiceId,
+                        ProductId = i.ProductId,
+                        ProductName = i.Product.Name ?? "N/A",
+                        Description = i.Description,
+                        Quantity = i.Quantity,
+                        UnitPrice = i.UnitPrice,
+                        TaxRate = i.TaxRate,
+                        LineTotal = i.LineTotal,
+                        CreatedAt = i.CreatedAt
+                    })
+                    .ToListAsync();
+
+                return items;
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError("Error : {ex}", ex);
+                return new Error("InternelError", ErrorType.General, "Internel Error Happend");
+            }
+        }
+
+        public async Task<Result<PagedResult<InvoiceItemDTO>>> GetByInvoiceId(int InvoiceId, int PageNumber, int PageSize)
+        {
+            try
+            {
+                var query = _Context.InvoiceItems.AsNoTracking()
+                    .Where(i => i.InvoiceId == InvoiceId && i.IsDeleted == false);
+                int CountItems = await query.CountAsync();
+                List<InvoiceItemDTO> items = await query.
+                Skip((PageNumber - 1) * PageSize)
+                .Take(PageSize)
                     .Select(i => new InvoiceItemDTO()
                     {
                         Id = i.Id,
@@ -134,7 +166,13 @@ namespace ERP.Infrastructure.presistence.Repos
                     })
                     .ToListAsync();
 
-                return items;
+                return new PagedResult<InvoiceItemDTO>()
+                {
+                    Items = items,
+                    PageNumber = PageNumber,
+                    PageSize = PageSize,
+                    TotalCount = CountItems
+                };
             }
             catch (Exception ex)
             {

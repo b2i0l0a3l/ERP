@@ -114,8 +114,6 @@ namespace ERP.Infrastructure.Shared
                 if (!refreshValid)
                     return Errors.InvalidToken;
 
-                refreshToken.RevokedAt = DateTime.UtcNow;
-                await _refreshTokenRepo.UpdateAsync(refreshToken);
                 return await GenerateAuthResponseAsync(user);
             }
             catch (Exception ex)
@@ -135,8 +133,8 @@ namespace ERP.Infrastructure.Shared
                 bool refreshValid = BCrypt.Net.BCrypt.Verify(request.RefreshToken, refresh.Token);
                 if (!refreshValid) return false;
 
-                refresh.RevokedAt = DateTime.UtcNow;
-                await _refreshTokenRepo.UpdateAsync(refresh);
+                await _refreshTokenRepo.RevokeRefreshTokenAsync(refresh.UserId);
+
 
                 return true;
             }
@@ -150,6 +148,7 @@ namespace ERP.Infrastructure.Shared
         private async Task<string> generateRefreshTokenAndStoreIt(User user)
         {
             string refreshToken = _tokenService.GenerateRefreshToken();
+            await _refreshTokenRepo.RevokeRefreshTokenAsync(user.Id);
             var newRefreshToken = new RefreshToken
             {
                 UserId = user.Id,

@@ -12,21 +12,26 @@ namespace ERP.Application.Features.Return.Commands
     public class CreateReturnCommandHandler : IRequestHandler<CreateReturnCommand, Result<int>>
     {
         private readonly IReturnRepo _repo;
+        private readonly ICurrentUserService _CurrentUser;
 
-        public CreateReturnCommandHandler(IReturnRepo repo)
+        public CreateReturnCommandHandler(IReturnRepo repo, ICurrentUserService currentUser)
         {
             _repo = repo;
+            _CurrentUser = currentUser;
         }
 
         public async ValueTask<Result<int>> Handle(CreateReturnCommand request, CancellationToken ct)
         {
+            if (!_CurrentUser.IsAuthenticated || string.IsNullOrEmpty(_CurrentUser.UserId))
+                return Errors.UserNotAuthorized;
+
             var returnParam = new ReturnParam
             {
                 WarehouseId = request.WarehouseId,
                 SaleOrderId = request.SaleOrderId,
                 Reason = request.Reason,
                 Status = request.Status,
-                CreatedByUserId = request.CreatedByUserId,
+                CreatedByUserId = _CurrentUser.UserId,
                 Items = request.Items.Select(item => new ReturnItemParam
                 {
                     ProductId = item.ProductId,

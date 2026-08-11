@@ -4,7 +4,11 @@
     <ProjectReference Include="..\ERP.Application\ERP.Application.csproj" />
     <ProjectReference Include="..\ERP.Core\ERP.Core.csproj" />
   </ItemGroup>
-
+<ItemGroup>
+  <None Include="Shared\Fonts\*.ttf">
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+  </None>
+</ItemGroup>
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.2.0" />
     <PackageReference Include="Mediator.Abstractions" Version="3.0.2" />

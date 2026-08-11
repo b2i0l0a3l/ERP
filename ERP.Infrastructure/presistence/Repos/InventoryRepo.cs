@@ -99,7 +99,7 @@ namespace ERP.Infrastructure.presistence.Repos
             try
             {
                 IQueryable<Inventory> query = _Context.Inventories.AsNoTracking()
-                    .Where(i => i.IsDeleted == false && (Params.WarehouseId == null || i.WarehouseId == Params.WarehouseId) && (Params.ProductId == null || i.ProductId == Params.ProductId));
+                    .Where(i => i.IsDeleted == false && (Params.WarehouseId == null || i.WarehouseId == Params.WarehouseId) && (Params.ProductId == null || i.ProductId == Params.ProductId) && (Params.ProductName == null || i.Product.Name.Contains(Params.ProductName)));
 
                 int count = await query.CountAsync();
 
@@ -142,7 +142,5 @@ namespace ERP.Infrastructure.presistence.Repos
                 return new Error("InternelError", ErrorType.General, "Internel Error Happend");
             }
         }
-
-      
     }
 }

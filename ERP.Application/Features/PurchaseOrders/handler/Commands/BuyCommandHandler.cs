@@ -9,14 +9,24 @@ namespace ERP.Application.Features.PurchaseOrders.Commands
     public class BuyCommandHandler : IRequestHandler<BuyCommand, Result<int>>
     {
         private readonly IPurchaseOrderRepo _repo;
-        public BuyCommandHandler(IPurchaseOrderRepo repo) => _repo = repo;
+        private readonly ICurrentUserService _CurrentUser;
+        public BuyCommandHandler(IPurchaseOrderRepo repo, ICurrentUserService currentUser)
+        {
+            _repo = repo;
+            _CurrentUser = currentUser;
+        }
         public async ValueTask<Result<int>> Handle(BuyCommand request, CancellationToken ct)
-            => await _repo.Buy(new BuyParams
+        {
+            if (!_CurrentUser.IsAuthenticated || string.IsNullOrEmpty(_CurrentUser.UserId))
+                return Errors.UserNotAuthorized;
+
+            return await _repo.Buy(new BuyParams
             {
                 SupplierId = request.SupplierId,
                 WarehouseId = request.WarehouseId,
-                CreatedByUserId = request.CreatedByUserId,
+                CreatedByUserId = _CurrentUser.UserId,
                 Items = request.Items
             });
+        }
     }
 }

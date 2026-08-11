@@ -4,42 +4,55 @@ using Mediator;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 
+using Microsoft.AspNetCore.Authorization;
+using ERP.Core.shared;
+using System.Security.Claims;
+
 namespace ERP.Api.Controller
 {
     [Route("api/Product")]
     [ApiController]
+    [Authorize(Policy = AppPolicies.AllRoles)]
     public class ProductController : BaseController
     {
         private readonly IMediator _mediator;
         public ProductController(IMediator mediator) => _mediator = mediator;
 
         [HttpPost]
+        [Authorize(Policy = AppPolicies.StaffOrAdmin)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> Create([FromForm] CreateProductCommand command)
-            => Handle(await _mediator.Send(command));
+        public async Task<IActionResult> Create([FromForm] CreateProductCommand command, CancellationToken cancellationToken)
+        {
+            return Handle(await _mediator.Send(command, cancellationToken));
+        }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = AppPolicies.StaffOrAdmin)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update(int id, UpdateProductCommand command,[FromServices] IOutputCacheStore cacheStore)
+        public async Task<IActionResult> Update(int id, UpdateProductCommand command,[FromServices] IOutputCacheStore cacheStore, CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(command);
-            await cacheStore.EvictByTagAsync("products-tag", CancellationToken.None);
+            var result = await _mediator.Send(command, cancellationToken);
+            await cacheStore.EvictByTagAsync("products-tag", cancellationToken);
             command.Id = id;
             return Handle(result);
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = AppPolicies.StaffOrAdmin)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Delete(int id,[FromServices] IOutputCacheStore cacheStore)
+        public async Task<IActionResult> Delete(int id,[FromServices] IOutputCacheStore cacheStore, CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(new DeleteProductCommand { Id = id });
-            await cacheStore.EvictByTagAsync("products-tag", CancellationToken.None);
+            var result = await _mediator.Send(new DeleteProductCommand
+            {
+                Id = id
+            }, cancellationToken);
+            await cacheStore.EvictByTagAsync("products-tag", cancellationToken);
 
             return Handle(result);
         }
@@ -71,7 +84,7 @@ namespace ERP.Api.Controller
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [OutputCache(Duration = 180, VaryByQueryKeys = new[] { "PageNumber", "PageSize", "ProductName","BarCode" }, Tags = new[] { "ProductPaged-tag" } )]
+        [OutputCache(Duration = 180, VaryByQueryKeys = new[] { "PageNumber", "PageSize", "ProductName","BarCode", "CategoryId", "BrandId" }, Tags = new[] { "ProductPaged-tag" } )]
         public async Task<IActionResult> GetPaged([FromQuery] GetProductsPagedQuery query)
             => Handle(await _mediator.Send(query));
 

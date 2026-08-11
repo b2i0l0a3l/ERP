@@ -20,7 +20,10 @@ namespace ERP.Infrastructure.presistence.Repos
 
         public async Task<RefreshToken?> GetByEmailAsync(string email)
         {
-            return await _context.RefreshTokens.FirstOrDefaultAsync(rt => rt.User.Email == email);
+            return await _context.RefreshTokens
+                .Where(rt => rt.User.Email == email)
+                .OrderByDescending(rt => rt.Id)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<Result<bool>> AddAsync(RefreshToken refreshToken)
@@ -49,6 +52,21 @@ namespace ERP.Infrastructure.presistence.Repos
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error updating refresh token for user {UserId}", refreshToken.UserId);
+                return new Error("DatabaseError", ErrorType.General, "Failed to update refresh token.");
+            }
+        }
+        public async Task<Result<bool>> RevokeRefreshTokenAsync(string UserId)
+        {
+            try
+            {
+               await _context.RefreshTokens.Where(r => r.UserId == UserId && r.RevokedAt == null)
+                .ExecuteUpdateAsync(s=>s.SetProperty(r=>r.RevokedAt,DateTime.UtcNow));
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating refresh token for user {UserId}", UserId);
                 return new Error("DatabaseError", ErrorType.General, "Failed to update refresh token.");
             }
         }

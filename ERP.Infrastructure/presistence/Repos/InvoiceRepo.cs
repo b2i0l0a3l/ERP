@@ -233,7 +233,7 @@ namespace ERP.Infrastructure.presistence.Repos
         }
         private DataTable? ConvertToDataTable(List<InvoiceItemRecord> records)
         {
-            if (records.Count <= 0)
+            if (records == null || records.Count <= 0)
             {
                 return null;
             }

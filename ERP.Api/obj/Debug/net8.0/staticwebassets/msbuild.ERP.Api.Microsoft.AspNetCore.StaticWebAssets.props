@@ -1,11 +1,11 @@
 ﻿<Project>
   <ItemGroup>
-    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\products\17c04f05-2918-41e1-81d5-95b7b6f1d6d7_photo_2026-07-01_14-31-11.jpg))">
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Invoices\caf2edfc-ab43-407d-94a2-7f4353a50cc8_INV-1010.pdf))">
       <SourceType>Package</SourceType>
       <SourceId>ERP.Api</SourceId>
       <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
       <BasePath>_content/ERP.Api</BasePath>
-      <RelativePath>products/17c04f05-2918-41e1-81d5-95b7b6f1d6d7_photo_2026-07-01_14-31-11.jpg</RelativePath>
+      <RelativePath>Invoices/caf2edfc-ab43-407d-94a2-7f4353a50cc8_INV-1010.pdf</RelativePath>
       <AssetKind>All</AssetKind>
       <AssetMode>All</AssetMode>
       <AssetRole>Primary</AssetRole>
@@ -14,151 +14,7 @@
       <AssetTraitValue></AssetTraitValue>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\products\17c04f05-2918-41e1-81d5-95b7b6f1d6d7_photo_2026-07-01_14-31-11.jpg))</OriginalItemSpec>
-    </StaticWebAsset>
-    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\products\2123b47b-53b8-46fe-a225-74eba8dc61de_photo_2026-07-01_14-31-11.jpg))">
-      <SourceType>Package</SourceType>
-      <SourceId>ERP.Api</SourceId>
-      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
-      <BasePath>_content/ERP.Api</BasePath>
-      <RelativePath>products/2123b47b-53b8-46fe-a225-74eba8dc61de_photo_2026-07-01_14-31-11.jpg</RelativePath>
-      <AssetKind>All</AssetKind>
-      <AssetMode>All</AssetMode>
-      <AssetRole>Primary</AssetRole>
-      <RelatedAsset></RelatedAsset>
-      <AssetTraitName></AssetTraitName>
-      <AssetTraitValue></AssetTraitValue>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\products\2123b47b-53b8-46fe-a225-74eba8dc61de_photo_2026-07-01_14-31-11.jpg))</OriginalItemSpec>
-    </StaticWebAsset>
-    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\products\3fd92ab3-7999-4c55-b16e-f634fdd1f3d8_photo_2026-07-08_14-57-05.jpg))">
-      <SourceType>Package</SourceType>
-      <SourceId>ERP.Api</SourceId>
-      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
-      <BasePath>_content/ERP.Api</BasePath>
-      <RelativePath>products/3fd92ab3-7999-4c55-b16e-f634fdd1f3d8_photo_2026-07-08_14-57-05.jpg</RelativePath>
-      <AssetKind>All</AssetKind>
-      <AssetMode>All</AssetMode>
-      <AssetRole>Primary</AssetRole>
-      <RelatedAsset></RelatedAsset>
-      <AssetTraitName></AssetTraitName>
-      <AssetTraitValue></AssetTraitValue>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\products\3fd92ab3-7999-4c55-b16e-f634fdd1f3d8_photo_2026-07-08_14-57-05.jpg))</OriginalItemSpec>
-    </StaticWebAsset>
-    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\products\3fe76f9f-2129-428d-946e-2dd6818e3c11_photo_2026-07-08_14-57-05.jpg))">
-      <SourceType>Package</SourceType>
-      <SourceId>ERP.Api</SourceId>
-      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
-      <BasePath>_content/ERP.Api</BasePath>
-      <RelativePath>products/3fe76f9f-2129-428d-946e-2dd6818e3c11_photo_2026-07-08_14-57-05.jpg</RelativePath>
-      <AssetKind>All</AssetKind>
-      <AssetMode>All</AssetMode>
-      <AssetRole>Primary</AssetRole>
-      <RelatedAsset></RelatedAsset>
-      <AssetTraitName></AssetTraitName>
-      <AssetTraitValue></AssetTraitValue>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\products\3fe76f9f-2129-428d-946e-2dd6818e3c11_photo_2026-07-08_14-57-05.jpg))</OriginalItemSpec>
-    </StaticWebAsset>
-    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\products\5e8b0522-5c40-4647-b32e-24d1bbfc7d68_photo_2026-07-01_14-31-11.jpg))">
-      <SourceType>Package</SourceType>
-      <SourceId>ERP.Api</SourceId>
-      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
-      <BasePath>_content/ERP.Api</BasePath>
-      <RelativePath>products/5e8b0522-5c40-4647-b32e-24d1bbfc7d68_photo_2026-07-01_14-31-11.jpg</RelativePath>
-      <AssetKind>All</AssetKind>
-      <AssetMode>All</AssetMode>
-      <AssetRole>Primary</AssetRole>
-      <RelatedAsset></RelatedAsset>
-      <AssetTraitName></AssetTraitName>
-      <AssetTraitValue></AssetTraitValue>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\products\5e8b0522-5c40-4647-b32e-24d1bbfc7d68_photo_2026-07-01_14-31-11.jpg))</OriginalItemSpec>
-    </StaticWebAsset>
-    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\products\5f91ef3c-f1a5-4d46-8a3d-2f831e233612_photo_2026-07-01_14-31-11.jpg))">
-      <SourceType>Package</SourceType>
-      <SourceId>ERP.Api</SourceId>
-      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
-      <BasePath>_content/ERP.Api</BasePath>
-      <RelativePath>products/5f91ef3c-f1a5-4d46-8a3d-2f831e233612_photo_2026-07-01_14-31-11.jpg</RelativePath>
-      <AssetKind>All</AssetKind>
-      <AssetMode>All</AssetMode>
-      <AssetRole>Primary</AssetRole>
-      <RelatedAsset></RelatedAsset>
-      <AssetTraitName></AssetTraitName>
-      <AssetTraitValue></AssetTraitValue>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\products\5f91ef3c-f1a5-4d46-8a3d-2f831e233612_photo_2026-07-01_14-31-11.jpg))</OriginalItemSpec>
-    </StaticWebAsset>
-    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\products\b50b71e5-5a83-46f8-9f17-7b720a8f8f89_photo_2026-07-01_14-31-11.jpg))">
-      <SourceType>Package</SourceType>
-      <SourceId>ERP.Api</SourceId>
-      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
-      <BasePath>_content/ERP.Api</BasePath>
-      <RelativePath>products/b50b71e5-5a83-46f8-9f17-7b720a8f8f89_photo_2026-07-01_14-31-11.jpg</RelativePath>
-      <AssetKind>All</AssetKind>
-      <AssetMode>All</AssetMode>
-      <AssetRole>Primary</AssetRole>
-      <RelatedAsset></RelatedAsset>
-      <AssetTraitName></AssetTraitName>
-      <AssetTraitValue></AssetTraitValue>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\products\b50b71e5-5a83-46f8-9f17-7b720a8f8f89_photo_2026-07-01_14-31-11.jpg))</OriginalItemSpec>
-    </StaticWebAsset>
-    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\products\e5131a4d-f33b-413e-bf4b-6837c2edd17c_photo_2026-07-01_14-31-32.jpg))">
-      <SourceType>Package</SourceType>
-      <SourceId>ERP.Api</SourceId>
-      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
-      <BasePath>_content/ERP.Api</BasePath>
-      <RelativePath>products/e5131a4d-f33b-413e-bf4b-6837c2edd17c_photo_2026-07-01_14-31-32.jpg</RelativePath>
-      <AssetKind>All</AssetKind>
-      <AssetMode>All</AssetMode>
-      <AssetRole>Primary</AssetRole>
-      <RelatedAsset></RelatedAsset>
-      <AssetTraitName></AssetTraitName>
-      <AssetTraitValue></AssetTraitValue>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\products\e5131a4d-f33b-413e-bf4b-6837c2edd17c_photo_2026-07-01_14-31-32.jpg))</OriginalItemSpec>
-    </StaticWebAsset>
-    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\products\e9eb38f4-a996-41bf-838a-60dd9e04fa00_photo_2026-07-08_14-57-05.jpg))">
-      <SourceType>Package</SourceType>
-      <SourceId>ERP.Api</SourceId>
-      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
-      <BasePath>_content/ERP.Api</BasePath>
-      <RelativePath>products/e9eb38f4-a996-41bf-838a-60dd9e04fa00_photo_2026-07-08_14-57-05.jpg</RelativePath>
-      <AssetKind>All</AssetKind>
-      <AssetMode>All</AssetMode>
-      <AssetRole>Primary</AssetRole>
-      <RelatedAsset></RelatedAsset>
-      <AssetTraitName></AssetTraitName>
-      <AssetTraitValue></AssetTraitValue>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\products\e9eb38f4-a996-41bf-838a-60dd9e04fa00_photo_2026-07-08_14-57-05.jpg))</OriginalItemSpec>
-    </StaticWebAsset>
-    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\products\fc432226-7715-4776-b029-c424e69e482a_photo_2026-07-01_14-31-11.jpg))">
-      <SourceType>Package</SourceType>
-      <SourceId>ERP.Api</SourceId>
-      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
-      <BasePath>_content/ERP.Api</BasePath>
-      <RelativePath>products/fc432226-7715-4776-b029-c424e69e482a_photo_2026-07-01_14-31-11.jpg</RelativePath>
-      <AssetKind>All</AssetKind>
-      <AssetMode>All</AssetMode>
-      <AssetRole>Primary</AssetRole>
-      <RelatedAsset></RelatedAsset>
-      <AssetTraitName></AssetTraitName>
-      <AssetTraitValue></AssetTraitValue>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\products\fc432226-7715-4776-b029-c424e69e482a_photo_2026-07-01_14-31-11.jpg))</OriginalItemSpec>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Invoices\caf2edfc-ab43-407d-94a2-7f4353a50cc8_INV-1010.pdf))</OriginalItemSpec>
     </StaticWebAsset>
   </ItemGroup>
 </Project>

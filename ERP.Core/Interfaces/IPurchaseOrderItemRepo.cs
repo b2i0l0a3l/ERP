@@ -11,6 +11,6 @@ namespace ERP.Core.Interfaces
         Task<Result<bool>> Delete(int Id);
         Task<Result<int>> Add(AddPurchaseOrderItemParams Params);
         Task<Result<bool>> Update(int Id, UpdatePurchaseOrderItemParams Params);
-        Task<Result<List<PurchaseOrderItemDTO>>> GetByPurchaseOrderId(int PurchaseOrderId);
+        Task<Result<PagedResult<PurchaseOrderItemDTO>>> GetByPurchaseOrderId(int PurchaseOrderId, int PageNumber, int PageSize);
     }
 }

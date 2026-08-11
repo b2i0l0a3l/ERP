@@ -1,3 +1,4 @@
+using ERP.Core.EntityParams.invoiceParams;
 using ERP.Core.enums;
 using ERP.Core.shared;
 using Mediator;
@@ -6,7 +7,8 @@ namespace ERP.Application.Features.Invoices.Requests.Commands
 {
     public record CreateInvoiceCommand : IRequest<Result<int>>
     {
-        public string? InvoiceNumber { get; set; }
+        
+        public int WarehouseId { get; set; }
         public enInvoiceType Type { get; set; }
         public enInvoiceStatus Status { get; set; } = enInvoiceStatus.Draft;
         public int? CustomerId { get; set; }
@@ -19,5 +21,6 @@ namespace ERP.Application.Features.Invoices.Requests.Commands
         public decimal TotalAmount { get; set; }
         public string? Notes { get; set; }
         public string? CreatedByUserId { get; set; }
+        public List<InvoiceItemRecord>? items { get; set; }
     }
 }

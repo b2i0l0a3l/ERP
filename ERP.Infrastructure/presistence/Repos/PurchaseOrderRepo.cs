@@ -69,7 +69,7 @@ namespace ERP.Infrastructure.presistence.Repos
             {
                 PurchaseOrderDTO? order = await _Context.PurchaseOrders.AsNoTracking()
                     .Where(o => o.Id == Id && o.IsDeleted == false)
-                    .Select(o => new PurchaseOrderDTO() { Id = o.Id, SupplierId = o.SupplierId, SupplierName = o.Supplier.FullName, OrderStatus = o.OrderStatus, Total = o.Total, CreatedAt = o.CreatedAt })
+                    .Select(o => new PurchaseOrderDTO() { Id = o.Id, SupplierId = o.SupplierId, SupplierName = o.Supplier.FullName, OrderStatus = o.OrderStatus, PaymentStatus = o.PaymentStatus, Total = o.Total, CreatedAt = o.CreatedAt })
                     .SingleOrDefaultAsync();
 
                 if (order == null) return Errors.PurchaseOrderNotFound;
@@ -87,7 +87,7 @@ namespace ERP.Infrastructure.presistence.Repos
             try
             {
                 IQueryable<PurchaseOrder> query = _Context.PurchaseOrders.AsNoTracking()
-                    .Where(o => o.IsDeleted == false && (Params.SupplierId == null || o.SupplierId == Params.SupplierId));
+                    .Where(o => o.IsDeleted == false && (Params.SupplierId == null || o.SupplierId == Params.SupplierId) && (Params.PaymentStatus == null || o.PaymentStatus == Params.PaymentStatus));
 
                 int count = await query.CountAsync();
 
@@ -95,7 +95,7 @@ namespace ERP.Infrastructure.presistence.Repos
                     .OrderByDescending(o => o.CreatedAt)
                     .Skip((Params.PageNumber - 1) * Params.PageSize)
                     .Take(Params.PageSize)
-                    .Select(o => new PurchaseOrderDTO() { Id = o.Id, SupplierId = o.SupplierId, SupplierName = o.Supplier.FullName, OrderStatus = o.OrderStatus, Total = o.Total, CreatedAt = o.CreatedAt })
+                    .Select(o => new PurchaseOrderDTO() { Id = o.Id, SupplierId = o.SupplierId, SupplierName = o.Supplier.FullName, OrderStatus = o.OrderStatus, PaymentStatus = o.PaymentStatus, Total = o.Total, CreatedAt = o.CreatedAt })
                     .ToListAsync();
 
                 return new PagedResult<PurchaseOrderDTO>()

@@ -9,23 +9,32 @@ namespace ERP.Application.Features.Invoices.Commands
     public class CreateInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand, Result<int>>
     {
         private readonly IInvoiceRepo _repo;
-        public CreateInvoiceCommandHandler(IInvoiceRepo repo) => _repo = repo;
+        private readonly ICurrentUserService _CurrentUser;
+        public CreateInvoiceCommandHandler(ICurrentUserService CurrentUser, IInvoiceRepo repo)
+        {
+
+            _CurrentUser = CurrentUser;
+            _repo = repo;
+        }
         public async ValueTask<Result<int>> Handle(CreateInvoiceCommand request, CancellationToken ct)
-            => await _repo.Add(new AddInvoiceParams
+        {
+            if (!_CurrentUser.IsAuthenticated || string.IsNullOrEmpty(_CurrentUser.UserId))
+                return Errors.UserNotAuthorized;
+
+            return await _repo.CreateCompleteInvoice(new CreateCompleteInvoiceParams
             {
-                InvoiceNumber = request.InvoiceNumber,
                 Type = request.Type,
                 Status = request.Status,
                 CustomerId = request.CustomerId,
                 SupplierId = request.SupplierId,
-                IssueDate = request.IssueDate,
-                DueDate = request.DueDate,
                 SubTotal = request.SubTotal,
-                TaxAmount = request.TaxAmount,
                 DiscountAmount = request.DiscountAmount,
-                TotalAmount = request.TotalAmount,
                 Notes = request.Notes,
-                CreatedByUserId = request.CreatedByUserId
+                Items = request.items,
+WarehouseId = request.WarehouseId,
+
+                CreatedByUserId = _CurrentUser.UserId
             });
+        }
     }
 }

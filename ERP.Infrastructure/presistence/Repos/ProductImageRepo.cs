@@ -55,6 +55,25 @@ namespace ERP.Infrastructure.presistence.Repos
             }
         }
 
+        public async Task<Result<List<ProductImageDTO>>> GetByProductId(int productId)
+        {
+            try
+            {
+                List<ProductImageDTO> images = await _Context.ProductImages.AsNoTracking()
+                    .Where(i => i.ProductId == productId && i.IsDeleted == false)
+                    .Select(i => new ProductImageDTO() { Id = i.Id, ProductId = i.ProductId, ImageUrl = i.ImageUrl, CreatedAt = i.CreatedAt })
+                    .OrderBy(i => i.Id)
+                    .ToListAsync();
+
+                return images;
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError("Error : {ex}", ex);
+                return new Error("InternelError", ErrorType.General, "Internel Error Happend");
+            }
+        }
+
         public async Task<Result<ProductImageDTO>> GetById(int Id)
         {
             try

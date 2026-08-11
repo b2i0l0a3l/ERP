@@ -102,16 +102,28 @@ namespace ERP.Infrastructure.presistence.Repos
             }
         }
 
-        public async Task<Result<List<SalesOrderItemDTO>>> GetBySalesOrderId(int SalesOrderId)
+        public async Task<Result<PagedResult<SalesOrderItemDTO>>> GetBySalesOrderId(int SalesOrderId, int PageNumber, int PageSize)
         {
             try
             {
-                List<SalesOrderItemDTO> items = await _Context.SalesOrderItems.AsNoTracking()
-                    .Where(i => i.SalesOrderId == SalesOrderId && i.IsDeleted == false)
+                IQueryable<SalesOrderItem> query = _Context.SalesOrderItems.AsNoTracking()
+                    .Where(i => i.SalesOrderId == SalesOrderId && i.IsDeleted == false);
+                int count = await query.CountAsync();
+
+                List<SalesOrderItemDTO> items = await query
+                    .Skip((PageNumber - 1) * PageSize)
+                    .Take(PageSize)
                     .Select(i => new SalesOrderItemDTO() { Id = i.Id, SalesOrderId = i.SalesOrderId, ProductId = i.ProductId, ProductName = i.Product.Name, Quantity = i.Quantity, SellingPrice = i.SellingPrice, Discount = i.Discount, Total = i.Total, CreatedAt = i.CreatedAt })
                     .ToListAsync();
 
-                return items;
+                
+                return new PagedResult<SalesOrderItemDTO>()
+                {
+                    Items = items,
+                    PageNumber = PageNumber,
+                    PageSize = PageSize,
+                    TotalCount = count
+                };
             }
             catch (Exception ex)
             {

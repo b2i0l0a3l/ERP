@@ -12,14 +12,19 @@ namespace ERP.Application.Features.Products.Commands
         private readonly IProductRepo _repo;
         private readonly IRemoveFile _remove;
         private readonly IFileStorageService _file;
-        public CreateProductCommandHandler(IRemoveFile remove,IProductRepo repo, IFileStorageService file)
+        private readonly ICurrentUserService _CurrentUser;
+        public CreateProductCommandHandler(IRemoveFile remove, IProductRepo repo, IFileStorageService file, ICurrentUserService currentUser)
         {
             _repo = repo;
             _file = file;
             _remove = remove;
+            _CurrentUser = currentUser;
         }
         public async ValueTask<Result<int>> Handle(CreateProductCommand request, CancellationToken ct)
         {
+            if (!_CurrentUser.IsAuthenticated || string.IsNullOrEmpty(_CurrentUser.UserId))
+                return Errors.UserNotAuthorized;
+
             List<string> imageUrls = new();
             if (request.Images != null && request.Images.Count > 0)
                 imageUrls = await UploadProductImage(request.Images);
@@ -35,8 +40,8 @@ namespace ERP.Application.Features.Products.Commands
                 CostPrice = request.CostPrice,
                 SellingPrice = request.SellingPrice,
                 ImageUrl = imageUrls.Any() ? imageUrls : null,
-                CreatedByUserId = request.CreatedByUserId
-            });
+                CreatedByUserId = _CurrentUser.UserId
+            }, ct);
 
             if (result.IsSuccess == false)
             {

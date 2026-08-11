@@ -5,10 +5,14 @@ using Mediator;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 
+using Microsoft.AspNetCore.Authorization;
+using ERP.Core.Models.InvoiceModels;
+
 namespace ERP.Api.Controller
 {
     [Route("api/Invoice")]
     [ApiController]
+    [Authorize(Policy = AppPolicies.StaffOrAdmin)]
     public class InvoiceController : BaseController
     {
         private readonly IMediator _mediator;
@@ -17,25 +21,40 @@ namespace ERP.Api.Controller
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> Create(CreateInvoiceCommand command)
-            => Handle(await _mediator.Send(command));
+        public async Task<IActionResult> Create(CreateInvoiceCommand command, [FromServices] IOutputCacheStore cacheStore, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(command, cancellationToken);
+            await cacheStore.EvictByTagAsync("invoices-tag", cancellationToken);
+            await cacheStore.EvictByTagAsync("dashboard-summary-tag", cancellationToken);
+            await cacheStore.EvictByTagAsync("SaleRaport-tag", cancellationToken);
+            await cacheStore.EvictByTagAsync("PurchaseRaport-tag", cancellationToken);
+            return Handle(result);
+        }
 
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update(int id, UpdateInvoiceCommand command)
+        public async Task<IActionResult> Update(int id, UpdateInvoiceCommand command, [FromServices] IOutputCacheStore cacheStore, CancellationToken cancellationToken)
         {
             command.Id = id;
-            return Handle(await _mediator.Send(command));
+            var result = await _mediator.Send(command, cancellationToken);
+            await cacheStore.EvictByTagAsync("invoices-tag", cancellationToken);
+            await cacheStore.EvictByTagAsync("dashboard-summary-tag", cancellationToken);
+            return Handle(result);
         }
 
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Delete(int id)
-            => Handle(await _mediator.Send(new DeleteInvoiceCommand { Id = id }));
+        public async Task<IActionResult> Delete(int id, [FromServices] IOutputCacheStore cacheStore, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(new DeleteInvoiceCommand { Id = id }, cancellationToken);
+            await cacheStore.EvictByTagAsync("invoices-tag", cancellationToken);
+            await cacheStore.EvictByTagAsync("dashboard-summary-tag", cancellationToken);
+            return Handle(result);
+        }
 
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -66,10 +85,10 @@ namespace ERP.Api.Controller
         [OutputCache(Duration = 300, Tags = new[] { "invoices-tag" })]
         public async Task<IActionResult> GetPdf(int id)
         {
-            Result<byte[]> result = await _mediator.Send(new GetInvoicePdfQuery { Id = id });
+            Result<InvoicePdfResponseDto> result = await _mediator.Send(new GetInvoicePdfQuery { Id = id });
             if (!result.IsSuccess)
                 return Handle(result);
-            return File(result.Value!, "application/pdf", $"invoice-{id}.pdf");
+            return File(result.Value?.PdfBytes!, "application/pdf", $"invoice-{id}.pdf");
         }
     }
 }

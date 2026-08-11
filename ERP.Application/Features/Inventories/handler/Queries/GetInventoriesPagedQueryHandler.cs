@@ -12,6 +12,6 @@ namespace ERP.Application.Features.Inventories.Queries
         private readonly IInventoryRepo _repo;
         public GetInventoriesPagedQueryHandler(IInventoryRepo repo) => _repo = repo;
         public async ValueTask<Result<PagedResult<InventoryDTO>>> Handle(GetInventoriesPagedQuery request, CancellationToken ct)
-            => await _repo.GetPaged(new GetPagedAsyncParams { PageNumber = request.PageNumber, PageSize = request.PageSize, WarehouseId = request.WarehouseId, ProductId = request.ProductId });
+            => await _repo.GetPaged(new GetPagedAsyncParams { PageNumber = request.PageNumber, PageSize = request.PageSize, WarehouseId = request.WarehouseId, ProductId = request.ProductId, ProductName = request.ProductName });
     }
 }

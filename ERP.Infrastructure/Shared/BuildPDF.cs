@@ -3,6 +3,7 @@ using ERP.Core.Interfaces;
 using ERP.Core.enums;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
 using ERP.Core.Models.InvoiceModels;
 
 namespace ERP.Infrastructure.Shared
@@ -10,23 +11,31 @@ namespace ERP.Infrastructure.Shared
     public class BuildPDF : IBuildPdf
     {
         private static readonly CultureInfo MoneyCulture = CultureInfo.InvariantCulture;
-        private const string CurrencyCode = "MAD";
+        private const string CurrencyCode = "درهم";
 
         private static string Money(decimal value) =>
             $"{value.ToString("N2", MoneyCulture)} {CurrencyCode}";
 
         private static (string Label, string Hex) StatusStyle(enInvoiceStatus? status) => status switch
         {
-            enInvoiceStatus.Paid => ("PAID", "#16A34A"),
-            enInvoiceStatus.Issued => ("Issued", "#D97706"),
-            enInvoiceStatus.Draft => ("DRAFT", "#6B7280"),
-            enInvoiceStatus.Cancelled => ("CANCELLED", "#6B7280"),
-            _ => ("N/A", "#374151")
+            enInvoiceStatus.Paid => ("مدفوعة", "#16A34A"),
+            enInvoiceStatus.Issued => ("صادرة", "#D97706"),
+            enInvoiceStatus.Draft => ("مسودة", "#6B7280"),
+            enInvoiceStatus.Cancelled => ("ملغاة", "#6B7280"),
+            _ => ("غير محدد", "#374151")
         };
 
-        public byte[] BuildPdf(InvoiceDTO invoice, List<InvoiceItemDTO> items)
+        private static string InvoiceTypeLabel(enInvoiceType type) => type switch
         {
-            const string BaseFont = "Poppins";
+            enInvoiceType.Sale => "فاتورة بيع",
+            enInvoiceType.CreditNote => "إشعار دائن",
+            enInvoiceType.Purchase => "فاتورة شراء",
+            _ => type.ToString()
+        };
+
+        public Stream BuildPdf(InvoiceDTO invoice, List<InvoiceItemDTO> items)
+        {
+            const string BaseFont = "Cairo";
             const string primary = "#1E3A8A";
             const string accent = "#2563EB";
             const string ink = "#111827";
@@ -37,33 +46,34 @@ namespace ERP.Infrastructure.Shared
             var (statusLabel, statusHex) = StatusStyle(invoice.Status);
 
             string billToName = invoice.CustomerId.HasValue
-                ? (invoice.CustomerName ?? "N/A")
+                ? (invoice.CustomerName ?? "غير محدد")
                 : invoice.SupplierId.HasValue
-                    ? (invoice.SupplierName ?? "N/A")
-                    : "N/A";
+                    ? (invoice.SupplierName ?? "غير محدد")
+                    : "غير محدد";
 
-            return Document.Create(container =>
+            var document = Document.Create(container =>
             {
                 container.Page(page =>
                 {
                     page.Size(PageSizes.A4);
                     page.Margin(0);
                     page.PageColor(Colors.White);
+                    page.ContentFromRightToLeft();
                     page.DefaultTextStyle(x => x.FontFamily(BaseFont).FontSize(10).FontColor(ink));
 
                     page.Header().Background(primary).Padding(30).Row(row =>
                     {
                         row.RelativeItem().Column(col =>
                         {
-                            col.Item().Text("INVOICE")
-                                .FontSize(28).Bold().FontColor(Colors.White).LetterSpacing(0.05f);
-                            col.Item().PaddingTop(4).Text($"No. {invoice.InvoiceNumber}")
+                            col.Item().Text("فاتورة")
+                                .FontSize(28).Bold().FontColor(Colors.White).LetterSpacing(0.02f);
+                            col.Item().PaddingTop(4).Text($"رقم: {invoice.InvoiceNumber}")
                                 .FontSize(11).FontColor("#BFDBFE");
                         });
 
-                        row.ConstantItem(140).AlignRight().Column(col =>
+                        row.ConstantItem(140).AlignLeft().Column(col =>
                         {
-                            col.Item().AlignRight().Background(Colors.White).PaddingVertical(4).PaddingHorizontal(10)
+                            col.Item().AlignLeft().Background(Colors.White).PaddingVertical(4).PaddingHorizontal(10)
                                 .Text(statusLabel).Bold().FontSize(10).FontColor(statusHex);
                         });
                     });
@@ -76,24 +86,24 @@ namespace ERP.Infrastructure.Shared
                         {
                             row.RelativeItem(2).Column(billTo =>
                             {
-                                billTo.Item().Text("BILL TO").Bold().FontSize(9)
-                                    .FontColor(muted).LetterSpacing(0.05f);
+                                billTo.Item().Text("إلى").Bold().FontSize(9)
+                                    .FontColor(muted).LetterSpacing(0.02f);
                                 billTo.Item().PaddingTop(4).Text(billToName).Bold().FontSize(13).FontColor(ink);
-                                billTo.Item().PaddingTop(2).Text(invoice.Type.ToString()).FontSize(9).FontColor(muted);
+                                billTo.Item().PaddingTop(2).Text(InvoiceTypeLabel(invoice.Type)).FontSize(9).FontColor(muted);
                             });
 
                             row.RelativeItem(1).Column(dates =>
                             {
-                                dates.Item().AlignRight().Text("ISSUE DATE").Bold().FontSize(9)
-                                    .FontColor(muted).LetterSpacing(0.05f);
-                                dates.Item().AlignRight().PaddingTop(4)
+                                dates.Item().AlignLeft().Text("تاريخ الإصدار").Bold().FontSize(9)
+                                    .FontColor(muted).LetterSpacing(0.02f);
+                                dates.Item().AlignLeft().PaddingTop(4)
                                     .Text($"{invoice.IssueDate:dd MMM yyyy}").FontSize(11);
 
                                 if (invoice.DueDate.HasValue)
                                 {
-                                    dates.Item().AlignRight().PaddingTop(10).Text("DUE DATE").Bold().FontSize(9)
-                                        .FontColor(muted).LetterSpacing(0.05f);
-                                    dates.Item().AlignRight().PaddingTop(4)
+                                    dates.Item().AlignLeft().PaddingTop(10).Text("تاريخ الاستحقاق").Bold().FontSize(9)
+                                        .FontColor(muted).LetterSpacing(0.02f);
+                                    dates.Item().AlignLeft().PaddingTop(4)
                                         .Text($"{invoice.DueDate.Value:dd MMM yyyy}").FontSize(11);
                                 }
                             });
@@ -114,18 +124,18 @@ namespace ERP.Infrastructure.Shared
 
                             table.Header(header =>
                             {
-                                void HeaderCell(string text, bool right = false)
+                                void HeaderCell(string text, bool left = false)
                                 {
                                     var cell = header.Cell().Background(primary).Padding(8);
-                                    var aligned = right ? cell.AlignRight() : cell;
-                                    aligned.Text(text).Bold().FontSize(9).FontColor(Colors.White).LetterSpacing(0.03f);
+                                    var aligned = left ? cell.AlignLeft() : cell;
+                                    aligned.Text(text).Bold().FontSize(9).FontColor(Colors.White).LetterSpacing(0.01f);
                                 }
 
-                                HeaderCell("PRODUCT");
-                                HeaderCell("QTY", right: true);
-                                HeaderCell("UNIT PRICE", right: true);
-                                HeaderCell("TAX", right: true);
-                                HeaderCell("TOTAL", right: true);
+                                HeaderCell("المنتج");
+                                HeaderCell("الكمية", left: true);
+                                HeaderCell("سعر الوحدة", left: true);
+                                HeaderCell("الضريبة", left: true);
+                                HeaderCell("الإجمالي", left: true);
                             });
 
                             for (int i = 0; i < items.Count; i++)
@@ -134,14 +144,14 @@ namespace ERP.Infrastructure.Shared
                                 string bg = i % 2 == 0 ? Colors.White : zebra;
 
                                 table.Cell().Background(bg).Padding(8)
-                                    .Text(item.ProductName ?? item.Description ?? "N/A").FontSize(9.5f);
-                                table.Cell().Background(bg).Padding(8).AlignRight()
+                                    .Text(item.ProductName ?? item.Description ?? "غير محدد").FontSize(9.5f);
+                                table.Cell().Background(bg).Padding(8).AlignLeft()
                                     .Text(item.Quantity.ToString(MoneyCulture)).FontSize(9.5f);
-                                table.Cell().Background(bg).Padding(8).AlignRight()
+                                table.Cell().Background(bg).Padding(8).AlignLeft()
                                     .Text(Money(item.UnitPrice)).FontSize(9.5f);
-                                table.Cell().Background(bg).Padding(8).AlignRight()
+                                table.Cell().Background(bg).Padding(8).AlignLeft()
                                     .Text($"{item.TaxRate.ToString(MoneyCulture)}%").FontSize(9.5f).FontColor(muted);
-                                table.Cell().Background(bg).Padding(8).AlignRight()
+                                table.Cell().Background(bg).Padding(8).AlignLeft()
                                     .Text(Money(item.LineTotal)).Bold().FontSize(9.5f);
                             }
                         });
@@ -159,18 +169,18 @@ namespace ERP.Infrastructure.Shared
                                             .FontSize(bold ? 12 : 10)
                                             .FontColor(colorHex ?? (bold ? ink : muted))
                                             .Bold();
-                                        r.RelativeItem().AlignRight().Text(value)
+                                        r.RelativeItem().AlignLeft().Text(value)
                                             .FontSize(bold ? 12 : 10)
                                             .FontColor(colorHex ?? ink)
                                             .Bold();
                                     });
                                 }
 
-                                SummaryLine("Subtotal", Money(invoice.SubTotal));
-                                SummaryLine("Tax", Money(invoice.TaxAmount));
-                                SummaryLine("Discount", $"- {Money(invoice.DiscountAmount)}");
+                                SummaryLine("المجموع الفرعي", Money(invoice.SubTotal));
+                                SummaryLine("الضريبة", Money(invoice.TaxAmount));
+                                SummaryLine("الخصم", $"- {Money(invoice.DiscountAmount)}");
                                 summary.Item().PaddingTop(6).PaddingBottom(6).LineHorizontal(1).LineColor(border);
-                                SummaryLine("Total Due", Money(invoice.TotalAmount), bold: true, colorHex: accent);
+                                SummaryLine("الإجمالي المستحق", Money(invoice.TotalAmount), bold: true, colorHex: accent);
                             });
                         });
 
@@ -178,7 +188,7 @@ namespace ERP.Infrastructure.Shared
                         {
                             col.Item().PaddingTop(25).Background(zebra).Padding(12).Column(notes =>
                             {
-                                notes.Item().Text("NOTES").Bold().FontSize(9).FontColor(muted).LetterSpacing(0.05f);
+                                notes.Item().Text("ملاحظات").Bold().FontSize(9).FontColor(muted).LetterSpacing(0.02f);
                                 notes.Item().PaddingTop(4).Text(invoice.Notes).FontSize(9.5f).FontColor(ink);
                             });
                         }
@@ -189,21 +199,25 @@ namespace ERP.Infrastructure.Shared
                         col.Item().LineHorizontal(1).LineColor(border);
                         col.Item().PaddingTop(8).Row(row =>
                         {
-                            row.RelativeItem().Text("Thank you for your business.")
+                            row.RelativeItem().Text("شكراً لتعاملكم معنا")
                                 .FontSize(8.5f).FontColor(muted);
 
-                            row.RelativeItem().AlignRight().Text(x =>
+                            row.RelativeItem().AlignLeft().Text(x =>
                             {
                                 x.DefaultTextStyle(s => s.FontSize(8.5f).FontColor(muted));
-                                x.Span("Page ");
+                                x.Span("صفحة ");
                                 x.CurrentPageNumber();
-                                x.Span(" of ");
+                                x.Span(" من ");
                                 x.TotalPages();
                             });
                         });
                     });
                 });
-            }).GeneratePdf();
+            });
+            var stream = new MemoryStream();
+            document.GeneratePdf(stream);
+            stream.Position = 0;
+            return stream;
         }
     }
 }
