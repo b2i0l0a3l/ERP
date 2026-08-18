@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.OutputCaching;
 
 using Microsoft.AspNetCore.Authorization;
 using ERP.Core.shared;
+using ERP.Core.Models.CustomerModels;
+using ERP.Core.Models.CustomerBalanceModels;
+using ERP.Core.Models.SalesOrderModels;
 
 namespace ERP.Api.Controller
 {
@@ -18,13 +21,13 @@ namespace ERP.Api.Controller
         public CustomerController(IMediator mediator) => _mediator = mediator;
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Result<int>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<int>), StatusCodes.Status201Created)]
         public async Task<IActionResult> Create(CreateCustomerCommand command)
             => Handle(await _mediator.Send(command));
 
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Update(int id, UpdateCustomerCommand command)
@@ -34,14 +37,14 @@ namespace ERP.Api.Controller
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(int id)
             => Handle(await _mediator.Send(new DeleteCustomerCommand { Id = id }));
 
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<CustomerDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [OutputCache(Duration = 120, Tags = new[] { "customers-tag" })]
@@ -49,7 +52,7 @@ namespace ERP.Api.Controller
             => Handle(await _mediator.Send(new GetCustomerByIdQuery { Id = id }));
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<PagedResult<CustomerDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [OutputCache(Duration = 180, VaryByQueryKeys = new[] { "PageNumber", "PageSize" }, Tags = new[] { "customers-tag" })]
@@ -57,7 +60,7 @@ namespace ERP.Api.Controller
             => Handle(await _mediator.Send(query));
 
         [HttpGet("{CustomerId}/orders")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<PagedResult<SalesOrderDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [OutputCache(Duration = 120, VaryByQueryKeys = new[] { "PageNumber", "PageSize" }, Tags = new[] { "customers-tag" })]
         public async Task<IActionResult> GetOrders([FromQuery] GetCustomerOrdersQuery query)
@@ -66,7 +69,7 @@ namespace ERP.Api.Controller
         }
 
         [HttpGet("{id}/balance")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<CustomerBalanceDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [OutputCache(Duration = 60, Tags = new[] { "customers-tag" })]
         public async Task<IActionResult> GetBalance(int id)

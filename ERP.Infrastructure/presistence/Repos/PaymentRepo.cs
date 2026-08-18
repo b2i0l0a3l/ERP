@@ -136,5 +136,33 @@ namespace ERP.Infrastructure.presistence.Repos
                 return new Error("InternelError", ErrorType.General, "Internel Error Happend");
             }
         }
+
+        public async Task<Result<bool>> UpdatePayment(int paymentId, decimal newAmount, string? paymentMethod = null, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var connection = _Context.Database.GetDbConnection() as SqlConnection;
+                if (connection != null && connection.State != ConnectionState.Open)
+                {
+                    await connection.OpenAsync(cancellationToken);
+                }
+
+                using (SqlCommand command = new SqlCommand("SP_UpdatePayment", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@PaymentId", paymentId);
+                    command.Parameters.AddWithValue("@NewAmount", newAmount);
+                    command.Parameters.AddWithValue("@PaymentMethod", (object?)paymentMethod ?? DBNull.Value);
+
+                    int affected = await command.ExecuteNonQueryAsync(cancellationToken);
+                    return affected != -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError("Error in UpdatePayment: {ex}", ex);
+                return new Error("InternalError", ErrorType.General, "Internal Error Happened during Update Payment");
+            }
+        }
     }
 }

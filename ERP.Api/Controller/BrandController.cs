@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.OutputCaching;
 
 using Microsoft.AspNetCore.Authorization;
 using ERP.Core.shared;
+using ERP.Core.Models.BrandModels;
 
 namespace ERP.Api.Controller
 {
@@ -19,14 +20,14 @@ namespace ERP.Api.Controller
 
         [HttpPost]
         [Authorize(Policy = AppPolicies.StaffOrAdmin)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Result<int>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<int>), StatusCodes.Status201Created)]
         public async Task<IActionResult> Create(CreateBrandCommand command)
             => Handle(await _mediator.Send(command));
 
         [HttpPut("{id}")]
         [Authorize(Policy = AppPolicies.StaffOrAdmin)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Update(int id, UpdateBrandCommand command)
@@ -37,14 +38,14 @@ namespace ERP.Api.Controller
 
         [HttpDelete("{id}")]
         [Authorize(Policy = AppPolicies.StaffOrAdmin)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(int id)
             => Handle(await _mediator.Send(new DeleteBrandCommand { Id = id }));
 
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<BrandDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [OutputCache(Duration = 120, Tags = new[] { "brands-tag" })]
@@ -52,7 +53,7 @@ namespace ERP.Api.Controller
             => Handle(await _mediator.Send(new GetBrandByIdQuery { Id = id }));
 
         [HttpGet("by-name/{name}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<BrandDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [OutputCache(Duration = 120, Tags = new[] { "brands-tag" })]
@@ -60,7 +61,7 @@ namespace ERP.Api.Controller
             => Handle(await _mediator.Send(new GetBrandByNameQuery { Name = name }));
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<PagedResult<BrandDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [OutputCache(Duration = 180, VaryByQueryKeys = new[] { "PageNumber", "PageSize" }, Tags = new[] { "brands-tag" })]

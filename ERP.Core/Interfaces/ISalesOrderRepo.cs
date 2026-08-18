@@ -13,5 +13,7 @@ namespace ERP.Core.Interfaces
         Task<Result<bool>> UndoDelete(int Id,int WarehouseId);
         Task<Result<int>> Add(AddSalesOrderParams Params);
         Task<Result<bool>> Update(int Id, UpdateSalesOrderParams Params);
+        Task<Result<bool>> CancelSalesOrder(int orderId, int warehouseId, string cancelledByUserId, CancellationToken cancellationToken = default);
+        Task<Result<bool>> UpdateStatus(int orderId, int newStatus, CancellationToken cancellationToken = default);
     }
 }

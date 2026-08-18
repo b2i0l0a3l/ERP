@@ -1,3 +1,5 @@
+using System.Data;
+using Microsoft.Data.SqlClient;
 using ERP.Core.Entities;
 using ERP.Core.EntityParams.inventoryParams;
 using ERP.Core.Interfaces;
@@ -5,6 +7,7 @@ using ERP.Core.Models.InventoryModels;
 using ERP.Core.shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using ERP.Infrastructure.Shared;
 
 namespace ERP.Infrastructure.presistence.Repos
 {
@@ -140,6 +143,67 @@ namespace ERP.Infrastructure.presistence.Repos
             {
                 _Logger.LogError("Error : {ex}", ex);
                 return new Error("InternelError", ErrorType.General, "Internel Error Happend");
+            }
+        }
+
+        public async Task<Result<bool>> TransferStock(int fromWarehouseId, int toWarehouseId, int productId, int quantity, string adjustedByUserId, string? reason = null, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var connection = _Context.Database.GetDbConnection() as SqlConnection;
+                if (connection != null && connection.State != ConnectionState.Open)
+                {
+                    await connection.OpenAsync(cancellationToken);
+                }
+
+                using (SqlCommand command = new SqlCommand("SP_TransferStock", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@FromWarehouseId", fromWarehouseId);
+                    command.Parameters.AddWithValue("@ToWarehouseId", toWarehouseId);
+                    command.Parameters.AddWithValue("@ProductId", productId);
+                    command.Parameters.AddWithValue("@Quantity", quantity);
+                    command.Parameters.AddWithValue("@AdjustedByUserId", adjustedByUserId);
+                    command.Parameters.AddWithValueOrNull("@Reason", reason);
+
+                    int affectedRows = await command.ExecuteNonQueryAsync(cancellationToken);
+                    return affectedRows != -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError("Error: {ex}", ex);
+                return new Error("InternalError", ErrorType.General, "Internal Error Happened during Stock Transfer");
+            }
+        }
+
+        public async Task<Result<bool>> AdjustInventory(int warehouseId, int productId, int newQuantity, string adjustedByUserId, string reason, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var connection = _Context.Database.GetDbConnection() as SqlConnection;
+                if (connection != null && connection.State != ConnectionState.Open)
+                {
+                    await connection.OpenAsync(cancellationToken);
+                }
+
+                using (SqlCommand command = new SqlCommand("SP_AdjustInventory", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@WarehouseId", warehouseId);
+                    command.Parameters.AddWithValue("@ProductId", productId);
+                    command.Parameters.AddWithValue("@NewQuantity", newQuantity);
+                    command.Parameters.AddWithValue("@AdjustedByUserId", adjustedByUserId);
+                    command.Parameters.AddWithValue("@Reason", reason);
+
+                    int affectedRows = await command.ExecuteNonQueryAsync(cancellationToken);
+                    return affectedRows != -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError("Error: {ex}", ex);
+                return new Error("InternalError", ErrorType.General, "Internal Error Happened during Inventory Adjustment");
             }
         }
     }

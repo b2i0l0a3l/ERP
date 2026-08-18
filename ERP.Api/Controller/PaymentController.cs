@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.OutputCaching;
 
 using Microsoft.AspNetCore.Authorization;
 using ERP.Core.shared;
+using ERP.Core.Models.PaymentModels;
 
 namespace ERP.Api.Controller
 {
@@ -18,20 +19,20 @@ namespace ERP.Api.Controller
         public PaymentController(IMediator mediator) => _mediator = mediator;
 
         [HttpPost("pay")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Result<int>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<int>), StatusCodes.Status201Created)]
         public async Task<IActionResult> Pay(CreatePaymentCommand command)
             => Handle(await _mediator.Send(command));
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(int id)
             => Handle(await _mediator.Send(new DeletePaymentCommand { Id = id }));
 
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<PaymentDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [OutputCache(Duration = 120, Tags = new[] { "payments-tag" })]
@@ -39,11 +40,20 @@ namespace ERP.Api.Controller
             => Handle(await _mediator.Send(new GetPaymentByIdQuery { Id = id }));
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<PagedResult<PaymentDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [OutputCache(Duration = 180, VaryByQueryKeys = new[] { "PageNumber", "PageSize" }, Tags = new[] { "payments-tag" })]
         public async Task<IActionResult> GetPaged([FromQuery] GetPaymentsPagedQuery query)
             => Handle(await _mediator.Send(query));
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Update(int id, UpdatePaymentCommand command)
+        {
+            command.PaymentId = id;
+            return Handle(await _mediator.Send(command));
+        }
     }
 }

@@ -239,5 +239,60 @@ namespace ERP.Infrastructure.presistence.Repos
             }
             return table;
         }
+
+        public async Task<Result<bool>> CancelSalesOrder(int orderId, int warehouseId, string cancelledByUserId, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var connection = _Context.Database.GetDbConnection() as SqlConnection;
+                if (connection != null && connection.State != ConnectionState.Open)
+                {
+                    await connection.OpenAsync(cancellationToken);
+                }
+
+                using (SqlCommand command = new SqlCommand("SP_CancelSalesOrder", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@OrderId", orderId);
+                    command.Parameters.AddWithValue("@WarehouseId", warehouseId);
+                    command.Parameters.AddWithValue("@CancelledByUserId", cancelledByUserId);
+
+                    int affected = await command.ExecuteNonQueryAsync(cancellationToken);
+                    return affected != -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError("Error in CancelSalesOrder: {ex}", ex);
+                return new Error("InternalError", ErrorType.General, "Internal Error Happened during Cancel Sales Order");
+            }
+        }
+
+        public async Task<Result<bool>> UpdateStatus(int orderId, int newStatus, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var connection = _Context.Database.GetDbConnection() as SqlConnection;
+                if (connection != null && connection.State != ConnectionState.Open)
+                {
+                    await connection.OpenAsync(cancellationToken);
+                }
+
+                using (SqlCommand command = new SqlCommand("SP_UpdateSalesOrderStatus", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@OrderId", orderId);
+                    command.Parameters.AddWithValue("@NewStatus", newStatus);
+
+                    int affected = await command.ExecuteNonQueryAsync(cancellationToken);
+                    return affected != -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError("Error in UpdateStatus: {ex}", ex);
+                return new Error("InternalError", ErrorType.General, "Internal Error Happened during Update Sales Order Status");
+            }
+        }
     }
 }

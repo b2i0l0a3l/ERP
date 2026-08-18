@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.OutputCaching;
 
 using Microsoft.AspNetCore.Authorization;
 using ERP.Core.shared;
+using ERP.Core.Models.InventoryModels;
 
 namespace ERP.Api.Controller
 {
@@ -18,13 +19,13 @@ namespace ERP.Api.Controller
         public InventoryController(IMediator mediator) => _mediator = mediator;
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Result<int>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<int>), StatusCodes.Status201Created)]
         public async Task<IActionResult> Create(CreateInventoryCommand command)
             => Handle(await _mediator.Send(command));
 
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Update(int id, UpdateInventoryCommand command)
@@ -34,14 +35,14 @@ namespace ERP.Api.Controller
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(int id)
             => Handle(await _mediator.Send(new DeleteInventoryCommand { Id = id }));
 
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<InventoryDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [OutputCache(Duration = 60, Tags = new[] { "inventories-tag" })]
@@ -49,7 +50,7 @@ namespace ERP.Api.Controller
             => Handle(await _mediator.Send(new GetInventoryByIdQuery { Id = id }));
 
         [HttpGet("by-product/{productId}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<InventoryDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [OutputCache(Duration = 60, Tags = new[] { "inventories-tag" })]
@@ -57,7 +58,7 @@ namespace ERP.Api.Controller
             => Handle(await _mediator.Send(new GetInventoryByProductIdQuery { ProductId = productId }));
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<PagedResult<InventoryDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [OutputCache(Duration = 120, VaryByQueryKeys = new[] { "PageNumber", "PageSize", "WarehouseId", "ProductId", "ProductName" }, Tags = new[] { "inventories-tag" })]
@@ -65,7 +66,7 @@ namespace ERP.Api.Controller
             => Handle(await _mediator.Send(query));
 
         [HttpGet("by-warehouse/{warehouseId}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<PagedResult<InventoryDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [OutputCache(Duration = 120, VaryByQueryKeys = new[] { "PageNumber", "PageSize" }, Tags = new[] { "inventories-tag" })]
         public async Task<IActionResult> GetByWarehouse(int warehouseId, [FromQuery] GetInventoryByWarehouseQuery query)
@@ -73,5 +74,17 @@ namespace ERP.Api.Controller
             query.WarehouseId = warehouseId;
             return Handle(await _mediator.Send(query));
         }
+
+        [HttpPost("transfer")]
+        [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> TransferStock(TransferStockCommand command)
+            => Handle(await _mediator.Send(command));
+
+        [HttpPost("adjust")]
+        [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AdjustInventory(AdjustInventoryCommand command)
+            => Handle(await _mediator.Send(command));
     }
 }

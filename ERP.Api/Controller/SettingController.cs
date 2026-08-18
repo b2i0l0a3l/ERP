@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.OutputCaching;
 
 using Microsoft.AspNetCore.Authorization;
 using ERP.Core.shared;
+using ERP.Core.Models.SettingModels;
 
 namespace ERP.Api.Controller
 {
@@ -18,13 +19,13 @@ namespace ERP.Api.Controller
         public SettingController(IMediator mediator) => _mediator = mediator;
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Result<int>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<int>), StatusCodes.Status201Created)]
         public async Task<IActionResult> Create(CreateSettingCommand command)
             => Handle(await _mediator.Send(command));
 
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Update(int id, UpdateSettingCommand command)
@@ -34,14 +35,14 @@ namespace ERP.Api.Controller
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(int id)
             => Handle(await _mediator.Send(new DeleteSettingCommand { Id = id }));
 
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<SettingDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [OutputCache(Duration = 300, Tags = new[] { "settings-tag" })]
@@ -49,7 +50,7 @@ namespace ERP.Api.Controller
             => Handle(await _mediator.Send(new GetSettingByIdQuery { Id = id }));
 
         [HttpGet("by-company/{companyName}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<SettingDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [OutputCache(Duration = 300, Tags = new[] { "settings-tag" })]

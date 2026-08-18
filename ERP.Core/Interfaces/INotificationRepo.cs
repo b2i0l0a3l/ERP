@@ -16,5 +16,7 @@ namespace ERP.Core.Interfaces
         Task<Result<HashSet<int>>> GetAlreadyNotifiedEntityIds(enNotificationType type, string relatedEntityType, DateTime since);
 
         Task<Result<List<NotificationDTO>>> AddBatch(List<AddNotificationParams> paramsList);
+        Task<Result<List<NotificationDTO>>> GenerateLowStockAlerts(CancellationToken cancellationToken = default);
+        Task<Result<List<NotificationDTO>>> GenerateOverduePaymentAlerts(int thresholdDays = 30, CancellationToken cancellationToken = default);
     }
 }

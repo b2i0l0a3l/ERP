@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.AspNetCore.Authorization;
 using ERP.Core.shared;
 using System.Security.Claims;
+using ERP.Core.Models.ProductModels;
 
 namespace ERP.Api.Controller
 {
@@ -20,8 +21,8 @@ namespace ERP.Api.Controller
 
         [HttpPost]
         [Authorize(Policy = AppPolicies.StaffOrAdmin)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Result<int>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<int>), StatusCodes.Status201Created)]
         public async Task<IActionResult> Create([FromForm] CreateProductCommand command, CancellationToken cancellationToken)
         {
             return Handle(await _mediator.Send(command, cancellationToken));
@@ -29,21 +30,20 @@ namespace ERP.Api.Controller
 
         [HttpPut("{id}")]
         [Authorize(Policy = AppPolicies.StaffOrAdmin)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Update(int id, UpdateProductCommand command,[FromServices] IOutputCacheStore cacheStore, CancellationToken cancellationToken)
         {
+            command.Id = id;
             var result = await _mediator.Send(command, cancellationToken);
             await cacheStore.EvictByTagAsync("products-tag", cancellationToken);
-            command.Id = id;
             return Handle(result);
         }
 
         [HttpDelete("{id}")]
         [Authorize(Policy = AppPolicies.StaffOrAdmin)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(int id,[FromServices] IOutputCacheStore cacheStore, CancellationToken cancellationToken)
@@ -58,30 +58,28 @@ namespace ERP.Api.Controller
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<ProductDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetById(int id)
             => Handle(await _mediator.Send(new GetProductByIdQuery { Id = id }));
 
         [HttpGet("by-name/{name}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<ProductDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
         public async Task<IActionResult> GetByName(string name)
             => Handle(await _mediator.Send(new GetProductByNameQuery { Name = name }));
 
         [HttpGet("by-barcode/{barcode}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<ProductDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
         public async Task<IActionResult> GetByBarcode(string barcode)
             => Handle(await _mediator.Send(new GetProductByBarcodeQuery { Barcode = barcode }));
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<PagedResult<ProductDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [OutputCache(Duration = 180, VaryByQueryKeys = new[] { "PageNumber", "PageSize", "ProductName","BarCode", "CategoryId", "BrandId" }, Tags = new[] { "ProductPaged-tag" } )]
@@ -89,10 +87,21 @@ namespace ERP.Api.Controller
             => Handle(await _mediator.Send(query));
 
         [HttpGet("search")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<PagedResult<ProductDTO>>), StatusCodes.Status200OK)]
         [OutputCache(Duration = 180, VaryByQueryKeys = new[] { "PageNumber", "PageSize", "Query" }, Tags = new[] { "ProductPaged-tag" } )]
-
         public async Task<IActionResult> Search([FromQuery] SearchProductsQuery query)
             => Handle(await _mediator.Send(query));
+
+        [HttpPost("bulk-update-prices")]
+        [Authorize(Policy = AppPolicies.AdminOnly)]
+        [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> BulkUpdatePrices(BulkUpdatePricesCommand command, [FromServices] IOutputCacheStore cacheStore, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(command, cancellationToken);
+            await cacheStore.EvictByTagAsync("products-tag", cancellationToken);
+            await cacheStore.EvictByTagAsync("ProductPaged-tag", cancellationToken);
+            return Handle(result);
+        }
     }
 }

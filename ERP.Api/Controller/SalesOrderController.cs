@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.AspNetCore.Authorization;
 using ERP.Core.shared;
 using System.Security.Claims;
+using ERP.Core.Models.SalesOrderModels;
+using ERP.Core.Models.SalesOrderItemModels;
+using ERP.Core.Models.PaymentModels;
 
 namespace ERP.Api.Controller
 {
@@ -22,8 +25,8 @@ namespace ERP.Api.Controller
         public SalesOrderController(IMediator mediator) => _mediator = mediator;
 
         [HttpPost("sell")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Result<int>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<int>), StatusCodes.Status201Created)]
         public async Task<IActionResult> Sell(SellCommand command, [FromServices] IOutputCacheStore cacheStore, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(command, cancellationToken);
@@ -38,21 +41,21 @@ namespace ERP.Api.Controller
         } 
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(int id, [FromQuery] int warehouseId, CancellationToken cancellationToken)
             => Handle(await _mediator.Send(new DeleteSalesOrderCommand { Id = id, WarehouseId = warehouseId }, cancellationToken));
  
         [HttpPut("undo-delete/{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UndoDelete(int id, [FromQuery] int warehouseId, CancellationToken cancellationToken)
             => Handle(await _mediator.Send(new UndoDeleteSalesOrderCommand { Id = id, WarehouseId = warehouseId }, cancellationToken));
  
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<SalesOrderDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [OutputCache(Duration = 120, Tags = new[] { "sales-orders-tag" })]
@@ -60,7 +63,7 @@ namespace ERP.Api.Controller
             => Handle(await _mediator.Send(new GetSalesOrderByIdQuery { Id = id }));
  
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<PagedResult<SalesOrderDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [OutputCache(Duration = 180, VaryByQueryKeys = new[] { "PageNumber", "PageSize", "CustomerId", "PaymentStatus" }, Tags = new[] { "sales-orders-tag" })]
@@ -68,7 +71,7 @@ namespace ERP.Api.Controller
             => Handle(await _mediator.Send(query));
  
         [HttpGet("{id}/items")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<PagedResult<SalesOrderItemDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [OutputCache(Duration = 120, VaryByQueryKeys = new[] { "PageNumber", "PageSize" }, Tags = new[] { "sales-orders-tag" })]
         public async Task<IActionResult> GetItems(int id, [FromQuery] GetSalesOrderItemsByOrderQuery query)
@@ -78,7 +81,7 @@ namespace ERP.Api.Controller
         }
  
         [HttpGet("{id}/payments")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<PagedResult<PaymentDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [OutputCache(Duration = 120, VaryByQueryKeys = new[] { "PageNumber", "PageSize" }, Tags = new[] { "sales-orders-tag" })]
         public async Task<IActionResult> GetPayments(int id, [FromQuery] GetPaymentsPagedQuery query)
@@ -88,8 +91,8 @@ namespace ERP.Api.Controller
         }
  
         [HttpPost("{id}/pay")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Result<int>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<int>), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Pay(int id, CreatePaymentCommand command, CancellationToken cancellationToken)
         {
@@ -98,12 +101,22 @@ namespace ERP.Api.Controller
         }
  
         [HttpPut("{id}/status")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateStatus(int id, UpdateSalesOrderStatusCommand command, CancellationToken cancellationToken)
         {
             command.Id = id;
+            return Handle(await _mediator.Send(command, cancellationToken));
+        }
+ 
+        [HttpPost("cancel")]
+        [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CancelSalesOrder(CancelSalesOrderCommand command, CancellationToken cancellationToken)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? command.CancelledByUserId;
+            command.CancelledByUserId = userId;
             return Handle(await _mediator.Send(command, cancellationToken));
         }
     }

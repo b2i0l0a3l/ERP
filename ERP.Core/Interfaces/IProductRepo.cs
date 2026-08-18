@@ -20,6 +20,6 @@ namespace ERP.Core.Interfaces
         Task<Result<int>> Add(AddProductParams Params, CancellationToken cancellationToken = default);
         Task<Result<bool>> Update(int Id, UpdateProductParams Params);
         Task<Result<PagedResult<ProductDTO>>> Search(string Query, int PageNumber, int PageSize);
-
+        Task<Result<bool>> BulkUpdatePrices(int? categoryId, int? brandId, decimal percentage, bool updateCostPrice, CancellationToken cancellationToken = default);
     }
 }

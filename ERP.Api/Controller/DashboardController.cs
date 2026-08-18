@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using ERP.Core.shared;
 using Microsoft.AspNetCore.OutputCaching;
+using ERP.Core.Models.DashboardModels;
+using ERP.Core.Models.InventoryModels;
 
 namespace ERP.Api.Controller
 {
@@ -22,7 +24,7 @@ namespace ERP.Api.Controller
             _Mediator = mediator;
         }
         [HttpGet("Summary")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<SummaryModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [OutputCache(Duration = 300, Tags = new[] { "dashboard-summary-tag" })] 
         public async Task<IActionResult> Summary( CancellationToken cancellationToken = default)
@@ -30,7 +32,7 @@ namespace ERP.Api.Controller
             return Handle(await _Mediator.Send(new Summary(), cancellationToken));
         }
         [HttpGet("SaleRaport")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<List<SaleRaport>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [OutputCache(Duration = 300,Tags = new[] { "SaleRaport-tag" })] 
         public async Task<IActionResult> SaleRaport([FromQuery]GetSaleRaportRequest req, CancellationToken cancellationToken = default)
@@ -38,7 +40,7 @@ namespace ERP.Api.Controller
             return Handle(await _Mediator.Send(req, cancellationToken));
         }
         [HttpGet("PurchaseRaport")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<List<PurchaseRaport>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [OutputCache(Duration = 300,Tags = new[] { "PurchaseRaport-tag" })] 
         public async Task<IActionResult> PurchaseRaport([FromQuery]GetPurchaseRaportRequest req, CancellationToken cancellationToken = default)
@@ -46,7 +48,7 @@ namespace ERP.Api.Controller
             return Handle(await _Mediator.Send(req, cancellationToken));
         }
         [HttpGet("GetLowItems")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<List<InventoryDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [OutputCache(Duration = 300,Tags = new[] { "GetLowItems-tag" })] 
         public async Task<IActionResult> GetLowItems(CancellationToken cancellationToken= default)
@@ -55,7 +57,7 @@ namespace ERP.Api.Controller
         }
 
         [HttpGet("BestProducts")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<List<BestProductModel>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [OutputCache(Duration = 180, VaryByQueryKeys = new[] { "Count" }, Tags = new[] { "BestProducts-tag" })]
         public async Task<IActionResult> BestProducts([FromQuery] GetBestProductsQuery query, CancellationToken cancellationToken = default)
@@ -64,7 +66,7 @@ namespace ERP.Api.Controller
         }
 
         [HttpGet("BestEmployees")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<List<BestEmployeeModel>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [OutputCache(Duration = 180, VaryByQueryKeys = new[] { "Count" }, Tags = new[] { "BestEmployees-tag" })]
         public async Task<IActionResult> BestEmployees([FromQuery] GetBestEmployeesQuery query, CancellationToken cancellationToken = default)

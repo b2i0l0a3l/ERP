@@ -10,5 +10,6 @@ namespace ERP.Core.Interfaces
         Task<Result<PagedResult<PaymentDTO>>> GetPaged(GetPagedAsyncParams Params);
         Task<Result<bool>> Delete(int Id);
         Task<Result<int>> Pay(PayParmas PayParams);
+        Task<Result<bool>> UpdatePayment(int paymentId, decimal newAmount, string? paymentMethod = null, CancellationToken cancellationToken = default);
     }
 }

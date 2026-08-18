@@ -222,7 +222,6 @@
 /home/fatma/ERP/ERP.Api/bin/Debug/net8.0/Serilog.Sinks.Async.dll
 /home/fatma/ERP/ERP.Api/bin/Debug/net8.0/Serilog.Enrichers.Thread.dll
 /home/fatma/ERP/ERP.Api/bin/Debug/net8.0/Serilog.Expressions.dll
-/home/fatma/ERP/ERP.Api/bin/Debug/net8.0/Serilog.Sinks.Seq.dll
 /home/fatma/ERP/ERP.Api/bin/Debug/net8.0/Shared/Fonts/Cairo-Black.ttf
 /home/fatma/ERP/ERP.Api/bin/Debug/net8.0/Shared/Fonts/Cairo-Bold.ttf
 /home/fatma/ERP/ERP.Api/bin/Debug/net8.0/Shared/Fonts/Cairo-ExtraBold.ttf
@@ -231,3 +230,18 @@
 /home/fatma/ERP/ERP.Api/bin/Debug/net8.0/Shared/Fonts/Cairo-Medium.ttf
 /home/fatma/ERP/ERP.Api/bin/Debug/net8.0/Shared/Fonts/Cairo-Regular.ttf
 /home/fatma/ERP/ERP.Api/bin/Debug/net8.0/Shared/Fonts/Cairo-SemiBold.ttf
+/home/fatma/ERP/ERP.Api/bin/Debug/net8.0/Logs/errors-20260811.json
+/home/fatma/ERP/ERP.Api/bin/Debug/net8.0/Logs/errors-20260812.json
+/home/fatma/ERP/ERP.Api/bin/Debug/net8.0/Logs/log-20260812.json
+/home/fatma/ERP/ERP.Api/bin/Debug/net8.0/Logs/errors-20260813.json
+/home/fatma/ERP/ERP.Api/bin/Debug/net8.0/Logs/log-20260813.json
+/home/fatma/ERP/ERP.Api/bin/Debug/net8.0/Logs/errors-20260814.json
+/home/fatma/ERP/ERP.Api/bin/Debug/net8.0/Logs/log-20260814.json
+/home/fatma/ERP/ERP.Api/bin/Debug/net8.0/Logs/errors-20260815.json
+/home/fatma/ERP/ERP.Api/bin/Debug/net8.0/Logs/errors-20260816.json
+/home/fatma/ERP/ERP.Api/bin/Debug/net8.0/Logs/log-20260815.json
+/home/fatma/ERP/ERP.Api/bin/Debug/net8.0/Logs/log-20260816.json
+/home/fatma/ERP/ERP.Api/bin/Debug/net8.0/Logs/errors-20260817.json
+/home/fatma/ERP/ERP.Api/bin/Debug/net8.0/Logs/log-20260817.json
+/home/fatma/ERP/ERP.Api/bin/Debug/net8.0/Logs/errors-20260818.json
+/home/fatma/ERP/ERP.Api/bin/Debug/net8.0/Logs/log-20260818.json

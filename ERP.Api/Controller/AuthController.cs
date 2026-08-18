@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using ERP.Application.Features.Auth.Requests.Commands;
+using ERP.Core.Models.AuthModels;
 using ERP.Core.shared;
 using Mediator;
 using Microsoft.AspNetCore.Authorization;
@@ -16,7 +17,7 @@ namespace ERP.Api.Controller
 
        
         [HttpPost("login")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<AuthResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Login(LoginCommand command)
@@ -24,7 +25,7 @@ namespace ERP.Api.Controller
 
   
         [HttpPost("register")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<RegisterResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Register(RegisterCommand command)
@@ -32,13 +33,13 @@ namespace ERP.Api.Controller
 
      
         [HttpPost("refresh-token")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<AuthResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> RefreshToken(RefreshTokenCommand command)
             => Handle(await _mediator.Send(command));
 
         [HttpPost("logout")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Logout([FromBody] LogoutCommand command)
         {
@@ -47,7 +48,7 @@ namespace ERP.Api.Controller
 
         [HttpPost("assign-role")]
         [Authorize(Roles = AppRoles.Admin)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -57,7 +58,7 @@ namespace ERP.Api.Controller
 
         [HttpGet("me")]
         [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult GetCurrentUser()
         {

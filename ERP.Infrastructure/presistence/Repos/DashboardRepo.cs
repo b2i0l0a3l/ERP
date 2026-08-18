@@ -193,36 +193,33 @@ namespace ERP.Infrastructure.presistence.Repos
         {
             try
             {
-                var aggregated = await _Context.SalesOrderItems
-                    .AsNoTracking()
-                    .Where(item => !item.IsDeleted && !item.SalesOrder.IsDeleted)
-                    .GroupBy(item => item.ProductId)
-                    .Select(group => new
-                    {
-                        ProductId = group.Key,
-                        TotalQuantitySold = group.Sum(x => x.Quantity),
-                        TotalRevenue = group.Sum(x => x.Total)
-                    })
-                    .OrderByDescending(x => x.TotalQuantitySold)
-                    .Take(count)
-                    .ToListAsync();
-
-                var productIds = aggregated.Select(x => x.ProductId).ToList();
-                var productNames = await _Context.Products
-                    .AsNoTracking()
-                    .Where(p => productIds.Contains(p.Id))
-                    .Select(p => new { p.Id, p.Name })
-                    .ToDictionaryAsync(p => p.Id, p => p.Name);
-
-                var result = aggregated.Select(x => new BestProductModel
+                var connection = _Context.Database.GetDbConnection() as SqlConnection;
+                if (connection != null && connection.State != ConnectionState.Open)
                 {
-                    ProductId = x.ProductId,
-                    ProductName = productNames.GetValueOrDefault(x.ProductId, "Unknown"),
-                    TotalQuantitySold = x.TotalQuantitySold,
-                    TotalRevenue = x.TotalRevenue
-                }).ToList();
+                    await connection.OpenAsync();
+                }
 
-                return result;
+                var list = new List<BestProductModel>();
+                using (SqlCommand command = new SqlCommand("SP_GetBestProducts", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@TopCount", count);
+
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            list.Add(new BestProductModel
+                            {
+                                ProductId = reader.GetInt32(reader.GetOrdinal("ProductId")),
+                                ProductName = reader.GetString(reader.GetOrdinal("ProductName")),
+                                TotalQuantitySold = reader.GetInt32(reader.GetOrdinal("TotalQuantitySold")),
+                                TotalRevenue = reader.GetDecimal(reader.GetOrdinal("TotalRevenue"))
+                            });
+                        }
+                    }
+                }
+                return list;
             }
             catch (Exception ex)
             {
@@ -235,42 +232,35 @@ namespace ERP.Infrastructure.presistence.Repos
         {
             try
             {
-                var aggregated = await _Context.SalesOrders
-                    .AsNoTracking()
-                    .Where(so => !so.IsDeleted && so.CreatedByUserId != null)
-                    .GroupBy(so => so.CreatedByUserId!)
-                    .Select(group => new
-                    {
-                        EmployeeId = group.Key,
-                        TotalOrdersCount = group.Count(),
-                        TotalSalesAmount = group.Sum(x => x.Total)
-                    })
-                    .OrderByDescending(x => x.TotalSalesAmount)
-                    .Take(count)
-                    .ToListAsync();
-
-                var employeeIds = aggregated.Select(x => x.EmployeeId).ToList();
-                var employees = await _Context.Users
-                    .AsNoTracking()
-                    .Where(u => employeeIds.Contains(u.Id))
-                    .Select(u => new { u.Id, u.FirstName, u.LastName, u.Email })
-                    .ToDictionaryAsync(u => u.Id, u => u);
-
-                var result = aggregated.Select(x =>
+                var connection = _Context.Database.GetDbConnection() as SqlConnection;
+                if (connection != null && connection.State != ConnectionState.Open)
                 {
-                    var emp = employees.GetValueOrDefault(x.EmployeeId);
-                    return new BestEmployeeModel
-                    {
-                        EmployeeId = x.EmployeeId,
-                        FirstName = emp?.FirstName ?? "Unknown",
-                        LastName = emp?.LastName ?? "",
-                        Email = emp?.Email ?? "",
-                        TotalOrdersCount = x.TotalOrdersCount,
-                        TotalSalesAmount = x.TotalSalesAmount
-                    };
-                }).ToList();
+                    await connection.OpenAsync();
+                }
 
-                return result;
+                var list = new List<BestEmployeeModel>();
+                using (SqlCommand command = new SqlCommand("SP_GetBestEmployees", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@TopCount", count);
+
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            list.Add(new BestEmployeeModel
+                            {
+                                EmployeeId = reader.GetString(reader.GetOrdinal("EmployeeId")),
+                                FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                                LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                                Email = reader.GetString(reader.GetOrdinal("Email")),
+                                TotalOrdersCount = reader.GetInt32(reader.GetOrdinal("TotalOrdersCount")),
+                                TotalSalesAmount = reader.GetDecimal(reader.GetOrdinal("TotalSalesAmount"))
+                            });
+                        }
+                    }
+                }
+                return list;
             }
             catch (Exception ex)
             {

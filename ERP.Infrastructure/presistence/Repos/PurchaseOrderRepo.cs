@@ -132,7 +132,7 @@ namespace ERP.Infrastructure.presistence.Repos
             }
         }
 
-        public async Task<Result<int>> Buy(BuyParams BuyParams)
+        public async Task<Result<int>> Buy(BuyParams BuyParams, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -140,7 +140,7 @@ namespace ERP.Infrastructure.presistence.Repos
 
                 if (connection != null && connection.State != ConnectionState.Open)
                 {
-                    await connection.OpenAsync();
+                    await connection.OpenAsync(cancellationToken);
                 }
                 using (SqlCommand command = new SqlCommand("SP_Buy", connection))
                 {
@@ -159,7 +159,7 @@ namespace ERP.Infrastructure.presistence.Repos
                         Direction = ParameterDirection.Output
                     };
                     command.Parameters.Add(outputIdParam);
-                    await command.ExecuteNonQueryAsync();
+                    await command.ExecuteNonQueryAsync(cancellationToken);
                     if (outputIdParam.Value == DBNull.Value)
                     {
                         return new Error("PurchaseOrderError", ErrorType.General, "Something Went Wrong!");
@@ -189,6 +189,34 @@ namespace ERP.Infrastructure.presistence.Repos
                 table.Rows.Add(item.ProductId, item.Quantity, item.SellingPrice);
             }
             return table;
+        }
+
+        public async Task<Result<bool>> DeletePurchaseOrder(int purchaseOrderId, int warehouseId, string deletedByUserId, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var connection = _Context.Database.GetDbConnection() as SqlConnection;
+                if (connection != null && connection.State != ConnectionState.Open)
+                {
+                    await connection.OpenAsync(cancellationToken);
+                }
+
+                using (SqlCommand command = new SqlCommand("SP_DeletePurchaseOrder", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@PurchaseOrderId", purchaseOrderId);
+                    command.Parameters.AddWithValue("@WarehouseId", warehouseId);
+                    command.Parameters.AddWithValue("@DeletedByUserId", deletedByUserId);
+
+                    int affected = await command.ExecuteNonQueryAsync(cancellationToken);
+                    return affected != -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError("Error in DeletePurchaseOrder: {ex}", ex);
+                return new Error("InternalError", ErrorType.General, "Internal Error Happened during Delete Purchase Order");
+            }
         }
     }
 }

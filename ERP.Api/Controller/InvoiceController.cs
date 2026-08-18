@@ -19,8 +19,8 @@ namespace ERP.Api.Controller
         public InvoiceController(IMediator mediator) => _mediator = mediator;
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Result<int>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<int>), StatusCodes.Status201Created)]
         public async Task<IActionResult> Create(CreateInvoiceCommand command, [FromServices] IOutputCacheStore cacheStore, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(command, cancellationToken);
@@ -32,7 +32,7 @@ namespace ERP.Api.Controller
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Update(int id, UpdateInvoiceCommand command, [FromServices] IOutputCacheStore cacheStore, CancellationToken cancellationToken)
@@ -45,7 +45,7 @@ namespace ERP.Api.Controller
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(int id, [FromServices] IOutputCacheStore cacheStore, CancellationToken cancellationToken)
@@ -57,7 +57,7 @@ namespace ERP.Api.Controller
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<InvoiceDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [OutputCache(Duration = 120, Tags = new[] { "invoices-tag" })]
@@ -65,7 +65,7 @@ namespace ERP.Api.Controller
             => Handle(await _mediator.Send(new GetInvoiceByIdQuery { Id = id }));
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<PagedResult<InvoiceDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [OutputCache(Duration = 180, VaryByQueryKeys = new[] { "PageNumber", "PageSize" }, Tags = new[] { "invoices-tag" })]
@@ -73,14 +73,14 @@ namespace ERP.Api.Controller
             => Handle(await _mediator.Send(query));
 
         [HttpGet("{id}/items")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<PagedResult<InvoiceItemDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [OutputCache(Duration = 120, Tags = new[] { "invoices-tag" })]
         public async Task<IActionResult> GetItems(int id)
             => Handle(await _mediator.Send(new ERP.Application.Features.InvoiceItems.Requests.Queries.GetInvoiceItemsByInvoiceIdQuery { InvoiceId = id }));
 
         [HttpGet("{id}/pdf")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(byte[]), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [OutputCache(Duration = 300, Tags = new[] { "invoices-tag" })]
         public async Task<IActionResult> GetPdf(int id)

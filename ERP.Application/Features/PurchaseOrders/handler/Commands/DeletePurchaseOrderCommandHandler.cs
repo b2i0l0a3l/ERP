@@ -10,6 +10,6 @@ namespace ERP.Application.Features.PurchaseOrders.Commands
         private readonly IPurchaseOrderRepo _repo;
         public DeletePurchaseOrderCommandHandler(IPurchaseOrderRepo repo) => _repo = repo;
         public async ValueTask<Result<bool>> Handle(DeletePurchaseOrderCommand request, CancellationToken ct)
-            => await _repo.Delete(request.Id);
+            => await _repo.DeletePurchaseOrder(request.PurchaseOrderId, request.WarehouseId, request.DeletedByUserId, ct);
     }
 }

@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.AspNetCore.Authorization;
 using ERP.Core.shared;
 using System.Security.Claims;
+using ERP.Core.Models.PurchaseOrderModels;
+using ERP.Core.Models.PurchaseOrderItemModels;
+using ERP.Core.Models.PaymentModels;
 
 namespace ERP.Api.Controller
 {
@@ -22,8 +25,8 @@ namespace ERP.Api.Controller
         public PurchaseOrderController(IMediator mediator) => _mediator = mediator;
 
         [HttpPost("buy")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Result<int>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<int>), StatusCodes.Status201Created)]
         public async Task<IActionResult> Buy(BuyCommand command, [FromServices] IOutputCacheStore cacheStore, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(command, cancellationToken);
@@ -36,7 +39,7 @@ namespace ERP.Api.Controller
         } 
 
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<PurchaseOrderDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [OutputCache(Duration = 120, Tags = new[] { "purchase-orders-tag" })]
@@ -44,7 +47,7 @@ namespace ERP.Api.Controller
             => Handle(await _mediator.Send(new GetPurchaseOrderByIdQuery { Id = id }));
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<PagedResult<PurchaseOrderDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [OutputCache(Duration = 180, VaryByQueryKeys = new[] { "PageNumber", "PageSize", "SupplierId", "PaymentStatus" }, Tags = new[] { "purchase-orders-tag" })]
@@ -52,7 +55,7 @@ namespace ERP.Api.Controller
             => Handle(await _mediator.Send(query));
 
         [HttpGet("{id}/items")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<PagedResult<PurchaseOrderItemDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [OutputCache(Duration = 120, VaryByQueryKeys = new[] { "PageNumber", "PageSize" }, Tags = new[] { "purchase-orders-tag" })]
         public async Task<IActionResult> GetItems(int id, [FromQuery] GetPurchaseOrderItemsByOrderQuery query)
@@ -62,7 +65,7 @@ namespace ERP.Api.Controller
         }
 
         [HttpGet("{id}/payments")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<PagedResult<PaymentDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [OutputCache(Duration = 120, VaryByQueryKeys = new[] { "PageNumber", "PageSize" }, Tags = new[] { "purchase-orders-tag" })]
         public async Task<IActionResult> GetPayments(int id, [FromQuery] GetPaymentsPagedQuery query)
@@ -72,8 +75,8 @@ namespace ERP.Api.Controller
         }
 
         [HttpPost("{id}/pay")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Result<int>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<int>), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Pay(int id, CreatePaymentCommand command, CancellationToken cancellationToken)
         {
@@ -82,7 +85,7 @@ namespace ERP.Api.Controller
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Update(int id, UpdatePurchaseOrderCommand command, CancellationToken cancellationToken)
@@ -92,14 +95,14 @@ namespace ERP.Api.Controller
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
             => Handle(await _mediator.Send(new DeletePurchaseOrderCommand { Id = id }, cancellationToken));
 
         [HttpPut("{id}/status")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateStatus(int id, UpdatePurchaseOrderStatusCommand command, CancellationToken cancellationToken)

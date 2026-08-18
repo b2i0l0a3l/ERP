@@ -1,3 +1,5 @@
+using System.Data;
+using Microsoft.Data.SqlClient;
 using ERP.Core.Entities;
 using ERP.Core.EntityParams.notificationParams;
 using ERP.Core.enums;
@@ -222,6 +224,92 @@ namespace ERP.Infrastructure.presistence.Repos
             {
                 _Logger.LogError("Error in AddBatch: {ex}", ex);
                 return new Error("InternelError", ErrorType.General, "Internel Error Happend");
+            }
+        }
+
+        public async Task<Result<List<NotificationDTO>>> GenerateLowStockAlerts(CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var connection = _Context.Database.GetDbConnection() as SqlConnection;
+                if (connection != null && connection.State != ConnectionState.Open)
+                {
+                    await connection.OpenAsync(cancellationToken);
+                }
+
+                var list = new List<NotificationDTO>();
+                using (SqlCommand command = new SqlCommand("SP_GenerateLowStockAlerts", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync(cancellationToken))
+                    {
+                        while (await reader.ReadAsync(cancellationToken))
+                        {
+                            list.Add(new NotificationDTO
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                Type = (enNotificationType)reader.GetInt32(reader.GetOrdinal("Type")),
+                                Priority = (enNotificationPriority)reader.GetInt32(reader.GetOrdinal("Priority")),
+                                Title = reader.GetString(reader.GetOrdinal("Title")),
+                                Message = reader.GetString(reader.GetOrdinal("Message")),
+                                IsRead = reader.GetBoolean(reader.GetOrdinal("IsRead")),
+                                RelatedEntityType = reader.GetString(reader.GetOrdinal("RelatedEntityType")),
+                                RelatedEntityId = reader.IsDBNull(reader.GetOrdinal("RelatedEntityId")) ? null : reader.GetInt32(reader.GetOrdinal("RelatedEntityId")),
+                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
+                            });
+                        }
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError("Error: {ex}", ex);
+                return new Error("InternalError", ErrorType.General, "Internal Error Happened during Generating Low Stock Alerts");
+            }
+        }
+
+        public async Task<Result<List<NotificationDTO>>> GenerateOverduePaymentAlerts(int thresholdDays = 30, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var connection = _Context.Database.GetDbConnection() as SqlConnection;
+                if (connection != null && connection.State != ConnectionState.Open)
+                {
+                    await connection.OpenAsync(cancellationToken);
+                }
+
+                var list = new List<NotificationDTO>();
+                using (SqlCommand command = new SqlCommand("SP_GenerateOverduePaymentAlerts", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@ThresholdDays", thresholdDays);
+
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync(cancellationToken))
+                    {
+                        while (await reader.ReadAsync(cancellationToken))
+                        {
+                            list.Add(new NotificationDTO
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                Type = (enNotificationType)reader.GetInt32(reader.GetOrdinal("Type")),
+                                Priority = (enNotificationPriority)reader.GetInt32(reader.GetOrdinal("Priority")),
+                                Title = reader.GetString(reader.GetOrdinal("Title")),
+                                Message = reader.GetString(reader.GetOrdinal("Message")),
+                                IsRead = reader.GetBoolean(reader.GetOrdinal("IsRead")),
+                                RelatedEntityType = reader.GetString(reader.GetOrdinal("RelatedEntityType")),
+                                RelatedEntityId = reader.IsDBNull(reader.GetOrdinal("RelatedEntityId")) ? null : reader.GetInt32(reader.GetOrdinal("RelatedEntityId")),
+                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
+                            });
+                        }
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError("Error: {ex}", ex);
+                return new Error("InternalError", ErrorType.General, "Internal Error Happened during Generating Overdue Payment Alerts");
             }
         }
     }
